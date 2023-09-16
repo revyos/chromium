@@ -141,8 +141,10 @@ i386/angle-lockfree.patch
 # Ungoogled Chromium
 ungoogled/core/ungoogled-chromium/disable-web-environment-integrity.patch
 
-riscv64/riscv-crashpad.patch
-riscv64/riscv-dav1d.patch
-riscv64/riscv-sandbox.patch
 riscv64/angle.patch
 riscv64/base.patch
+riscv64/crashpad.patch
+riscv64/dav1d.patch
+riscv64/sandbox.patch
+riscv64/ffmpeg-scripts.patch
+riscv64/ffmpeg-config.patch
