@@ -35,7 +35,7 @@ Build-Depends:
  brotli,
  nodejs,
  rollup,
- valgrind,
+ valgrind [!riscv64],
  xz-utils,
  x11-apps,
  xcb-proto,
