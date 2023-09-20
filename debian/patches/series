@@ -143,7 +143,6 @@ ungoogled/core/ungoogled-chromium/disable-web-environment-integrity.patch
 
 riscv64/angle.patch
 riscv64/base.patch
-riscv64/crashpad.patch
 riscv64/dav1d.patch
 riscv64/sandbox.patch
 riscv64/ffmpeg-scripts.patch
