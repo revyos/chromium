@@ -1,6 +1,6 @@
 --- a/third_party/ffmpeg/ffmpeg_generated.gni
 +++ b/third_party/ffmpeg/ffmpeg_generated.gni
-@@ -671,21 +671,8 @@
+@@ -672,22 +672,8 @@
      "libavutil/riscv/timer.h",
    ]
    ffmpeg_gas_sources += [
@@ -11,6 +11,7 @@
 -    "libavcodec/riscv/bswapdsp_rvb.S",
 -    "libavcodec/riscv/bswapdsp_rvv.S",
 -    "libavcodec/riscv/fmtconvert_rvv.S",
+-    "libavcodec/riscv/h264_mc_chroma.S",
 -    "libavcodec/riscv/idctdsp_rvv.S",
 -    "libavcodec/riscv/opusdsp_rvv.S",
      "libavcodec/riscv/pixblockdsp_rvi.S",

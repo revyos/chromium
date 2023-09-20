@@ -1,0 +1,195 @@
+description: revert "Don't assume scripts live in third_party/ffmpeg ."
+
+Reverts this config [1] due to the fact robo_configuration assumes
+we're on a x86_64 machine. See function EnsureHostInfo in
+chromium/scripts/robo_lib/config.py.
+
+Also EnsureChromeSrc as well as probably other Ensure* functions does
+not work well with the upstream source tarball Debian decided to use.
+
+[1]: https://chromium.googlesource.com/chromium/third_party/ffmpeg/+/442313ad146d2e212234576f9301732b257cce7f
+
+--- a/third_party/ffmpeg/chromium/scripts/build_ffmpeg.py
++++ b/third_party/ffmpeg/chromium/scripts/build_ffmpeg.py
+@@ -20,15 +20,12 @@
+ import subprocess
+ import sys
+ import tempfile
+-from robo_lib import config
+ 
+-ROBO_CONFIGURATION = config.RoboConfiguration()
+-FFMPEG_DIR = ROBO_CONFIGURATION.ffmpeg_home()
+-CHROMIUM_ROOT_DIR = ROBO_CONFIGURATION.chrome_src()
++SCRIPTS_DIR = os.path.abspath(os.path.dirname(__file__))
++FFMPEG_DIR = os.path.abspath(os.path.join(SCRIPTS_DIR, '..', '..'))
++CHROMIUM_ROOT_DIR = os.path.abspath(os.path.join(FFMPEG_DIR, '..', '..'))
+ NDK_ROOT_DIR = os.path.abspath(
+     os.path.join(CHROMIUM_ROOT_DIR, 'third_party', 'android_toolchain'))
+-# Token to indicate that a build has completed successfully, so that we can
+-# skip it with `--fast`.
+ SUCCESS_TOKEN = 'THIS_BUILD_WORKED'
+ 
+ sys.path.append(os.path.join(CHROMIUM_ROOT_DIR, 'build'))
+@@ -540,7 +537,7 @@
+   if target_os == 'mac' and host_os == 'linux':
+     RewriteFile(
+         os.path.join(config_dir, 'ffbuild/config.mak'), [(r'LD=ld64.lld',
+-        r'LD=' + ROBO_CONFIGURATION.get_script_path('fake_linker.py'))])
++        r'LD=' + os.path.join(SCRIPTS_DIR, 'fake_linker.py'))])
+ 
+   # The FFMPEG roll build hits a bug in lld-link that does not impact the
+   # overall Chromium build.
+@@ -548,7 +545,7 @@
+   if target_os == 'win' and target_arch == 'arm64' and host_os == 'linux':
+     RewriteFile(
+         os.path.join(config_dir, 'ffbuild/config.mak'), [(r'LD=lld-link',
+-        r'LD=' + ROBO_CONFIGURATION.get_script_path('fake_linker.py'))])
++        r'LD=' + os.path.join(SCRIPTS_DIR, 'fake_linker.py'))])
+ 
+   if target_os in (host_os, host_os + '-noasm', 'android',
+                    'win', 'mac') and not config_only:
+--- a/third_party/ffmpeg/chromium/scripts/check_merge.py
++++ b/third_party/ffmpeg/chromium/scripts/check_merge.py
+@@ -51,7 +51,6 @@
+ ]
+ 
+ # Filenames that will be excluded from the regex matching.
+-# Note: chromium/scripts can be removed once the scripts move out of ffmpeg.
+ EXCLUDED_FILENAMES = [
+     r"^configure$",
+     r"^chromium/scripts/",
+--- a/third_party/ffmpeg/chromium/scripts/generate_gn.py
++++ b/third_party/ffmpeg/chromium/scripts/generate_gn.py
+@@ -36,10 +36,6 @@
+ import shutil
+ import subprocess
+ import sys
+-from robo_lib import config
+-
+-# The test wrapper doesn't appreciate the status messages.
+-ROBO_CONFIGURATION = config.RoboConfiguration(quiet=True)
+ 
+ COPYRIGHT = """# Copyright %d The Chromium Authors. All rights reserved.
+ # Use of this source code is governed by a BSD-style license that can be
+@@ -580,7 +576,7 @@
+       '-s',
+       '--source_dir',
+       dest='source_dir',
+-      default=ROBO_CONFIGURATION.ffmpeg_home(),
++      default='.',
+       metavar='DIR',
+       help='FFmpeg source directory.')
+ 
+@@ -588,7 +584,7 @@
+       '-b',
+       '--build_dir',
+       dest='build_dir',
+-      default=ROBO_CONFIGURATION.ffmpeg_home(),
++      default='.',
+       metavar='DIR',
+       help='Build root containing build.x64.linux, etc...')
+ 
+--- a/third_party/ffmpeg/chromium/scripts/robo_build.py
++++ b/third_party/ffmpeg/chromium/scripts/robo_build.py
+@@ -46,8 +46,8 @@
+   robo_configuration.chdir_to_ffmpeg_home();
+   # Include --fast so that we don't rebuild the same directory once we get it
+   # right.  This saves time when only one platform is failing.
+-  build_script = robo_configuration.get_script_path("build_ffmpeg.py")
+-  command = ["python3", build_script, "--fast", platform]
++  command = ["python3", "./chromium/scripts/build_ffmpeg.py", "--fast",
++             platform]
+   if architecture:
+     command.append(architecture)
+   if robo_configuration.Call(command, stdout=None, stderr=None):
+@@ -64,14 +64,13 @@
+   """
+   robo_configuration.chdir_to_ffmpeg_home();
+   shell.log("Copying FFmpeg configs")
+-  copy_cmd = robo_configuration.get_script_path("copy_config.sh")
+-  if robo_configuration.Call([copy_cmd]):
++  if robo_configuration.Call(["./chromium/scripts/copy_config.sh"]):
+     raise Exception("FFmpeg copy_config.sh failed")
+ 
+   # TODO... seems like there are some auto-generated files that generate_gn.py
+   # throws a nasty license check on, incorrectly. maybe they should be deleted
+   shell.log("Generating GN config for all ffmpeg versions")
+-  generate_cmd = [robo_configuration.get_script_path("generate_gn.py")]
++  generate_cmd = ["./chromium/scripts/generate_gn.py"]
+   if write_git_file:
+     generate_cmd += ["-i", robo_configuration.autorename_git_file()]
+   if robo_configuration.Call(generate_cmd):
+--- a/third_party/ffmpeg/chromium/scripts/robo_lib/config.py
++++ b/third_party/ffmpeg/chromium/scripts/robo_lib/config.py
+@@ -13,9 +13,8 @@
+     '_chrome_src', '_host_operating_system', '_host_architecture',
+     '_ffmpeg_home', '_relative_asan_directory', '_branch_name',
+     '_sushi_branch_name', '_readme_chromium_commit_title', '_nasm_path',
+-    '_prompt_on_call', '_os_flavor', '_force_gn_rebuild', '_skip_allowed',
+-    '_script_directory')
+-  def __init__(self, quiet=False):
++    '_prompt_on_call', '_os_flavor', '_force_gn_rebuild', '_skip_allowed')
++  def __init__(self):
+     """Ensure that our config has basic fields fill in, and passes some sanity
+     checks too.
+ 
+@@ -37,7 +36,6 @@
+     self._readme_chromium_commit_title = "README.chromium file"
+     self.EnsureHostInfo()
+     self.EnsureChromeSrc()
+-    self.EnsureScriptDirectory()
+ 
+     # Origin side of the merge.  Only needs to change if you're trying to
+     # modify and test robosushi itself.  See robosushi.py for details.
+@@ -49,20 +47,16 @@
+ 
+     self.EnsurePathContainsLLVM()
+     self.EnsureNoMakeInfo()
++    shell.log("Using chrome src: %s" % self.chrome_src())
+     self.EnsureFFmpegHome()
++    shell.log("Using ffmpeg home: %s" % self.ffmpeg_home())
+     self.EnsureASANConfig()
+     self.ComputeBranchName()
+-    if not quiet:
+-      shell.log(f"Using chrome src: {self.chrome_src()}")
+-      shell.log(f"Using script dir: {self._script_directory}")
+-      shell.log(f"Using ffmpeg home:{self.ffmpeg_home()}")
+-      shell.log(f"On branch: {self.branch_name()}")
+-      if self.sushi_branch_name():
+-        shell.log(f"On sushi branch: {self.sushi_branch_name()}")
++    shell.log("On branch: %s" % self.branch_name())
++    if self.sushi_branch_name():
++      shell.log("On sushi branch: %s" % self.sushi_branch_name())
+ 
+     # Filename that we'll ask generate_gn.py to write git commands to.
+-    # TODO: Should this use script_directory, or stay with ffmpeg?  As long as
+-    # there's a .gitignore entry, either should be fine.
+     self._autorename_git_file = os.path.join(
+       self.ffmpeg_home(), "chromium", "scripts", ".git_commands.sh")
+ 
+@@ -88,10 +82,6 @@
+   def absolute_asan_directory(self):
+     return os.path.join(self.chrome_src(), self.relative_asan_directory())
+ 
+-  def get_script_path(self, script_name):
+-    """Return /path/to/robosuhi/scripts/dir/script_name"""
+-    return os.path.join(self._script_directory, script_name)
+-
+   def chdir_to_chrome_src(self):
+     os.chdir(self.chrome_src())
+ 
+@@ -171,14 +161,6 @@
+       wd = os.path.dirname(wd)
+     raise Exception("could not find src/AUTHORS in any parent of the wd")
+ 
+-  def EnsureScriptDirectory(self):
+-    """Make sure we know where the scripts are."""
+-    # Assume that __func__ is /.../scripts/robo_lib/something.py
+-    self._script_directory = os.path.dirname(os.path.dirname(__file__))
+-    # Verify that `robosushi.py` is in this directory, for sanity.
+-    if not os.path.isfile(self.get_script_path("robosushi.py")):
+-      raise Exception("Fix EnsureScriptDir -- cannot find robosushi.py")
+-
+   def EnsureFFmpegHome(self):
+     """Ensure that |self| has "ffmpeg_home" set."""
+     self._ffmpeg_home = os.path.join(self.chrome_src(), "third_party", "ffmpeg")
