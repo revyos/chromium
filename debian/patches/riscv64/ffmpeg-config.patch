@@ -1,6 +1,3 @@
-diff --git a/chromium/config/Chrome/linux/riscv64/config.h b/chromium/config/Chrome/linux/riscv64/config.h
-new file mode 100644
-index 0000000..ba4145c
 --- /dev/null
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/riscv64/config.h
 @@ -0,0 +1,751 @@
@@ -755,9 +752,6 @@ index 0000000..ba4145c
 +#define CONFIG_WMA_FREQS 0
 +#define CONFIG_WMV2DSP 0
 +#endif /* FFMPEG_CONFIG_H */
-diff --git a/chromium/config/Chrome/linux/riscv64/config_components.h b/chromium/config/Chrome/linux/riscv64/config_components.h
-new file mode 100644
-index 0000000..0bf0c78
 --- /dev/null
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/riscv64/config_components.h
 @@ -0,0 +1,2164 @@
@@ -2925,17 +2919,11 @@ index 0000000..0bf0c78
 +#define CONFIG_IPFS_GATEWAY_PROTOCOL 0
 +#define CONFIG_IPNS_GATEWAY_PROTOCOL 0
 +#endif /* FFMPEG_CONFIG_COMPONENTS_H */
-diff --git a/chromium/config/Chrome/linux/riscv64/libavcodec/bsf_list.c b/chromium/config/Chrome/linux/riscv64/libavcodec/bsf_list.c
-new file mode 100644
-index 0000000..7ff70c6
 --- /dev/null
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/riscv64/libavcodec/bsf_list.c
 @@ -0,0 +1,2 @@
 +static const FFBitStreamFilter * const bitstream_filters[] = {
 +    NULL };
-diff --git a/chromium/config/Chrome/linux/riscv64/libavcodec/codec_list.c b/chromium/config/Chrome/linux/riscv64/libavcodec/codec_list.c
-new file mode 100644
-index 0000000..cbd7f39
 --- /dev/null
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/riscv64/libavcodec/codec_list.c
 @@ -0,0 +1,20 @@
@@ -2959,9 +2947,6 @@ index 0000000..cbd7f39
 +    &ff_pcm_u8_decoder,
 +    &ff_libopus_decoder,
 +    NULL };
-diff --git a/chromium/config/Chrome/linux/riscv64/libavcodec/parser_list.c b/chromium/config/Chrome/linux/riscv64/libavcodec/parser_list.c
-new file mode 100644
-index 0000000..50acddb
 --- /dev/null
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/riscv64/libavcodec/parser_list.c
 @@ -0,0 +1,11 @@
@@ -2976,9 +2961,6 @@ index 0000000..50acddb
 +    &ff_vp8_parser,
 +    &ff_vp9_parser,
 +    NULL };
-diff --git a/chromium/config/Chrome/linux/riscv64/libavformat/demuxer_list.c b/chromium/config/Chrome/linux/riscv64/libavformat/demuxer_list.c
-new file mode 100644
-index 0000000..920b22b
 --- /dev/null
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/riscv64/libavformat/demuxer_list.c
 @@ -0,0 +1,9 @@
@@ -2991,25 +2973,16 @@ index 0000000..920b22b
 +    &ff_ogg_demuxer,
 +    &ff_wav_demuxer,
 +    NULL };
-diff --git a/chromium/config/Chrome/linux/riscv64/libavformat/muxer_list.c b/chromium/config/Chrome/linux/riscv64/libavformat/muxer_list.c
-new file mode 100644
-index 0000000..ae54c39
 --- /dev/null
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/riscv64/libavformat/muxer_list.c
 @@ -0,0 +1,2 @@
 +static const FFOutputFormat * const muxer_list[] = {
 +    NULL };
-diff --git a/chromium/config/Chrome/linux/riscv64/libavformat/protocol_list.c b/chromium/config/Chrome/linux/riscv64/libavformat/protocol_list.c
-new file mode 100644
-index 0000000..247e1e4
 --- /dev/null
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/riscv64/libavformat/protocol_list.c
 @@ -0,0 +1,2 @@
 +static const URLProtocol * const url_protocols[] = {
 +    NULL };
-diff --git a/chromium/config/Chrome/linux/riscv64/libavutil/avconfig.h b/chromium/config/Chrome/linux/riscv64/libavutil/avconfig.h
-new file mode 100644
-index 0000000..8558b35
 --- /dev/null
 +++ b/third_party/ffmpeg/chromium/config/Chrome/linux/riscv64/libavutil/avconfig.h
 @@ -0,0 +1,6 @@
@@ -3019,9 +2992,6 @@ index 0000000..8558b35
 +#define AV_HAVE_BIGENDIAN 0
 +#define AV_HAVE_FAST_UNALIGNED 0
 +#endif /* AVUTIL_AVCONFIG_H */
-diff --git a/chromium/config/ChromeOS/linux/riscv64/config.h b/chromium/config/ChromeOS/linux/riscv64/config.h
-new file mode 100644
-index 0000000..deef66e
 --- /dev/null
 +++ b/third_party/ffmpeg/chromium/config/ChromeOS/linux/riscv64/config.h
 @@ -0,0 +1,751 @@
@@ -3776,9 +3746,6 @@ index 0000000..deef66e
 +#define CONFIG_WMA_FREQS 0
 +#define CONFIG_WMV2DSP 0
 +#endif /* FFMPEG_CONFIG_H */
-diff --git a/chromium/config/ChromeOS/linux/riscv64/config_components.h b/chromium/config/ChromeOS/linux/riscv64/config_components.h
-new file mode 100644
-index 0000000..4290dbe
 --- /dev/null
 +++ b/third_party/ffmpeg/chromium/config/ChromeOS/linux/riscv64/config_components.h
 @@ -0,0 +1,2164 @@
@@ -5946,17 +5913,11 @@ index 0000000..4290dbe
 +#define CONFIG_IPFS_GATEWAY_PROTOCOL 0
 +#define CONFIG_IPNS_GATEWAY_PROTOCOL 0
 +#endif /* FFMPEG_CONFIG_COMPONENTS_H */
-diff --git a/chromium/config/ChromeOS/linux/riscv64/libavcodec/bsf_list.c b/chromium/config/ChromeOS/linux/riscv64/libavcodec/bsf_list.c
-new file mode 100644
-index 0000000..7ff70c6
 --- /dev/null
 +++ b/third_party/ffmpeg/chromium/config/ChromeOS/linux/riscv64/libavcodec/bsf_list.c
 @@ -0,0 +1,2 @@
 +static const FFBitStreamFilter * const bitstream_filters[] = {
 +    NULL };
-diff --git a/chromium/config/ChromeOS/linux/riscv64/libavcodec/codec_list.c b/chromium/config/ChromeOS/linux/riscv64/libavcodec/codec_list.c
-new file mode 100644
-index 0000000..0cc2135
 --- /dev/null
 +++ b/third_party/ffmpeg/chromium/config/ChromeOS/linux/riscv64/libavcodec/codec_list.c
 @@ -0,0 +1,22 @@
@@ -5982,9 +5943,6 @@ index 0000000..0cc2135
 +    &ff_pcm_u8_decoder,
 +    &ff_libopus_decoder,
 +    NULL };
-diff --git a/chromium/config/ChromeOS/linux/riscv64/libavcodec/parser_list.c b/chromium/config/ChromeOS/linux/riscv64/libavcodec/parser_list.c
-new file mode 100644
-index 0000000..e1652f8
 --- /dev/null
 +++ b/third_party/ffmpeg/chromium/config/ChromeOS/linux/riscv64/libavcodec/parser_list.c
 @@ -0,0 +1,13 @@
@@ -6001,9 +5959,6 @@ index 0000000..e1652f8
 +    &ff_vp8_parser,
 +    &ff_vp9_parser,
 +    NULL };
-diff --git a/chromium/config/ChromeOS/linux/riscv64/libavformat/demuxer_list.c b/chromium/config/ChromeOS/linux/riscv64/libavformat/demuxer_list.c
-new file mode 100644
-index 0000000..74870b9
 --- /dev/null
 +++ b/third_party/ffmpeg/chromium/config/ChromeOS/linux/riscv64/libavformat/demuxer_list.c
 @@ -0,0 +1,10 @@
@@ -6017,25 +5972,16 @@ index 0000000..74870b9
 +    &ff_ogg_demuxer,
 +    &ff_wav_demuxer,
 +    NULL };
-diff --git a/chromium/config/ChromeOS/linux/riscv64/libavformat/muxer_list.c b/chromium/config/ChromeOS/linux/riscv64/libavformat/muxer_list.c
-new file mode 100644
-index 0000000..ae54c39
 --- /dev/null
 +++ b/third_party/ffmpeg/chromium/config/ChromeOS/linux/riscv64/libavformat/muxer_list.c
 @@ -0,0 +1,2 @@
 +static const FFOutputFormat * const muxer_list[] = {
 +    NULL };
-diff --git a/chromium/config/ChromeOS/linux/riscv64/libavformat/protocol_list.c b/chromium/config/ChromeOS/linux/riscv64/libavformat/protocol_list.c
-new file mode 100644
-index 0000000..247e1e4
 --- /dev/null
 +++ b/third_party/ffmpeg/chromium/config/ChromeOS/linux/riscv64/libavformat/protocol_list.c
 @@ -0,0 +1,2 @@
 +static const URLProtocol * const url_protocols[] = {
 +    NULL };
-diff --git a/chromium/config/ChromeOS/linux/riscv64/libavutil/avconfig.h b/chromium/config/ChromeOS/linux/riscv64/libavutil/avconfig.h
-new file mode 100644
-index 0000000..8558b35
 --- /dev/null
 +++ b/third_party/ffmpeg/chromium/config/ChromeOS/linux/riscv64/libavutil/avconfig.h
 @@ -0,0 +1,6 @@
@@ -6045,9 +5991,6 @@ index 0000000..8558b35
 +#define AV_HAVE_BIGENDIAN 0
 +#define AV_HAVE_FAST_UNALIGNED 0
 +#endif /* AVUTIL_AVCONFIG_H */
-diff --git a/chromium/config/Chromium/linux/riscv64/config.h b/chromium/config/Chromium/linux/riscv64/config.h
-new file mode 100644
-index 0000000..0a04142
 --- /dev/null
 +++ b/third_party/ffmpeg/chromium/config/Chromium/linux/riscv64/config.h
 @@ -0,0 +1,751 @@
@@ -6802,9 +6745,6 @@ index 0000000..0a04142
 +#define CONFIG_WMA_FREQS 0
 +#define CONFIG_WMV2DSP 0
 +#endif /* FFMPEG_CONFIG_H */
-diff --git a/chromium/config/Chromium/linux/riscv64/config_components.h b/chromium/config/Chromium/linux/riscv64/config_components.h
-new file mode 100644
-index 0000000..18d38c4
 --- /dev/null
 +++ b/third_party/ffmpeg/chromium/config/Chromium/linux/riscv64/config_components.h
 @@ -0,0 +1,2164 @@
@@ -8972,17 +8912,11 @@ index 0000000..18d38c4
 +#define CONFIG_IPFS_GATEWAY_PROTOCOL 0
 +#define CONFIG_IPNS_GATEWAY_PROTOCOL 0
 +#endif /* FFMPEG_CONFIG_COMPONENTS_H */
-diff --git a/chromium/config/Chromium/linux/riscv64/libavcodec/bsf_list.c b/chromium/config/Chromium/linux/riscv64/libavcodec/bsf_list.c
-new file mode 100644
-index 0000000..7ff70c6
 --- /dev/null
 +++ b/third_party/ffmpeg/chromium/config/Chromium/linux/riscv64/libavcodec/bsf_list.c
 @@ -0,0 +1,2 @@
 +static const FFBitStreamFilter * const bitstream_filters[] = {
 +    NULL };
-diff --git a/chromium/config/Chromium/linux/riscv64/libavcodec/codec_list.c b/chromium/config/Chromium/linux/riscv64/libavcodec/codec_list.c
-new file mode 100644
-index 0000000..653357d
 --- /dev/null
 +++ b/third_party/ffmpeg/chromium/config/Chromium/linux/riscv64/libavcodec/codec_list.c
 @@ -0,0 +1,18 @@
@@ -9004,9 +8938,6 @@ index 0000000..653357d
 +    &ff_pcm_u8_decoder,
 +    &ff_libopus_decoder,
 +    NULL };
-diff --git a/chromium/config/Chromium/linux/riscv64/libavcodec/parser_list.c b/chromium/config/Chromium/linux/riscv64/libavcodec/parser_list.c
-new file mode 100644
-index 0000000..f81fbe8
 --- /dev/null
 +++ b/third_party/ffmpeg/chromium/config/Chromium/linux/riscv64/libavcodec/parser_list.c
 @@ -0,0 +1,9 @@
@@ -9019,9 +8950,6 @@ index 0000000..f81fbe8
 +    &ff_vp8_parser,
 +    &ff_vp9_parser,
 +    NULL };
-diff --git a/chromium/config/Chromium/linux/riscv64/libavformat/demuxer_list.c b/chromium/config/Chromium/linux/riscv64/libavformat/demuxer_list.c
-new file mode 100644
-index 0000000..1908ba1
 --- /dev/null
 +++ b/third_party/ffmpeg/chromium/config/Chromium/linux/riscv64/libavformat/demuxer_list.c
 @@ -0,0 +1,8 @@
@@ -9033,25 +8961,16 @@ index 0000000..1908ba1
 +    &ff_ogg_demuxer,
 +    &ff_wav_demuxer,
 +    NULL };
-diff --git a/chromium/config/Chromium/linux/riscv64/libavformat/muxer_list.c b/chromium/config/Chromium/linux/riscv64/libavformat/muxer_list.c
-new file mode 100644
-index 0000000..ae54c39
 --- /dev/null
 +++ b/third_party/ffmpeg/chromium/config/Chromium/linux/riscv64/libavformat/muxer_list.c
 @@ -0,0 +1,2 @@
 +static const FFOutputFormat * const muxer_list[] = {
 +    NULL };
-diff --git a/chromium/config/Chromium/linux/riscv64/libavformat/protocol_list.c b/chromium/config/Chromium/linux/riscv64/libavformat/protocol_list.c
-new file mode 100644
-index 0000000..247e1e4
 --- /dev/null
 +++ b/third_party/ffmpeg/chromium/config/Chromium/linux/riscv64/libavformat/protocol_list.c
 @@ -0,0 +1,2 @@
 +static const URLProtocol * const url_protocols[] = {
 +    NULL };
-diff --git a/chromium/config/Chromium/linux/riscv64/libavutil/avconfig.h b/chromium/config/Chromium/linux/riscv64/libavutil/avconfig.h
-new file mode 100644
-index 0000000..8558b35
 --- /dev/null
 +++ b/third_party/ffmpeg/chromium/config/Chromium/linux/riscv64/libavutil/avconfig.h
 @@ -0,0 +1,6 @@
@@ -9061,11 +8980,9 @@ index 0000000..8558b35
 +#define AV_HAVE_BIGENDIAN 0
 +#define AV_HAVE_FAST_UNALIGNED 0
 +#endif /* AVUTIL_AVCONFIG_H */
-diff --git a/ffmpeg_generated.gni b/ffmpeg_generated.gni
-index 375489c..a2cd25f 100644
 --- a/third_party/ffmpeg/ffmpeg_generated.gni
 +++ b/third_party/ffmpeg/ffmpeg_generated.gni
-@@ -650,3 +650,42 @@ if (use_linux_config && current_cpu == "x64" && ffmpeg_branding == "ChromeOS") {
+@@ -650,3 +650,42 @@
    ]
  }
  

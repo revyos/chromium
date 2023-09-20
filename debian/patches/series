@@ -147,4 +147,5 @@ riscv64/dav1d.patch
 riscv64/sandbox.patch
 riscv64/ffmpeg-scripts.patch
 riscv64/ffmpeg-config.patch
+riscv64/ffmpeg-disable-rvv-rvb.patch
 riscv64/remove-blink-BUILD-gn-unused.patch
