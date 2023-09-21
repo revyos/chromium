@@ -1,129 +1,105 @@
-diff --git a/src/compiler/backend/riscv/instruction-selector-riscv64.cc b/src/compiler/backend/riscv/instruction-selector-riscv64.cc
-index 2dd1597bb7..8a4c8aa467 100644
---- a/v8/src/compiler/backend/riscv/instruction-selector-riscv64.cc
-+++ b/v8/src/compiler/backend/riscv/instruction-selector-riscv64.cc
-@@ -1210,24 +1210,32 @@ void InstructionSelectorT<Adapter>::VisitChangeFloat64ToInt32(node_t node) {
+diff --git a/src/compiler/backend/riscv/code-generator-riscv.cc b/src/compiler/backend/riscv/code-generator-riscv.cc
+index 63e2d1de90..31214895a8 100644
+--- a/v8/src/compiler/backend/riscv/code-generator-riscv.cc
++++ b/v8/src/compiler/backend/riscv/code-generator-riscv.cc
+@@ -1540,31 +1540,11 @@ CodeGenerator::CodeGenResult CodeGenerator::AssembleArchInstruction(
+       __ FPUCanonicalizeNaN(i.OutputDoubleRegister(), i.InputDoubleRegister(0));
+       break;
+     case kRiscvCvtSD: {
+-      Label done;
+-      __ feq_d(kScratchReg, i.InputDoubleRegister(0), i.InputDoubleRegister(0));
+-      __ fmv_x_d(kScratchReg2, i.InputDoubleRegister(0));
+       __ fcvt_s_d(i.OutputDoubleRegister(), i.InputDoubleRegister(0));
+-      __ Branch(&done, eq, kScratchReg, Operand(1));
+-      __ And(kScratchReg2, kScratchReg2, Operand(0x8000000000000000));
+-      __ srai(kScratchReg2, kScratchReg2, 32);
+-      __ fmv_d_x(kScratchDoubleReg, kScratchReg2);
+-      __ fsgnj_s(i.OutputDoubleRegister(), i.OutputDoubleRegister(),
+-                 kScratchDoubleReg);
+-      __ bind(&done);
+       break;
+     }
+     case kRiscvCvtDS: {
+-      Label done;
+-      __ feq_s(kScratchReg, i.InputDoubleRegister(0), i.InputDoubleRegister(0));
+-      __ fmv_x_d(kScratchReg2, i.InputDoubleRegister(0));
+       __ fcvt_d_s(i.OutputDoubleRegister(), i.InputSingleRegister(0));
+-      __ Branch(&done, eq, kScratchReg, Operand(1));
+-      __ And(kScratchReg2, kScratchReg2, Operand(0x80000000));
+-      __ slli(kScratchReg2, kScratchReg2, 32);
+-      __ fmv_d_x(kScratchDoubleReg, kScratchReg2);
+-      __ fsgnj_d(i.OutputDoubleRegister(), i.OutputDoubleRegister(),
+-                 kScratchDoubleReg);
+-      __ bind(&done);
+       break;
+     }
+     case kRiscvCvtDW: {
+diff --git a/src/compiler/backend/riscv/instruction-selector-riscv.h b/src/compiler/backend/riscv/instruction-selector-riscv.h
+index 91e79b2e1d..0e5d44651d 100644
+--- a/v8/src/compiler/backend/riscv/instruction-selector-riscv.h
++++ b/v8/src/compiler/backend/riscv/instruction-selector-riscv.h
+@@ -277,15 +277,19 @@ static void VisitBinop(InstructionSelectorT<Adapter>* selector, Node* node,
  }
  
  template <typename Adapter>
--void InstructionSelectorT<Adapter>::VisitTryTruncateFloat64ToInt32(Node* node) {
--  RiscvOperandGeneratorT<Adapter> g(this);
--  InstructionOperand inputs[] = {g.UseRegister(node->InputAt(0))};
--  InstructionOperand outputs[2];
--  size_t output_count = 0;
--  outputs[output_count++] = g.DefineAsRegister(node);
-+void InstructionSelectorT<Adapter>::VisitTryTruncateFloat64ToInt32(
-+    node_t node) {
-+  if constexpr (Adapter::IsTurboshaft) {
-+    UNIMPLEMENTED();
-+  } else {
-+    RiscvOperandGeneratorT<Adapter> g(this);
-+    InstructionOperand inputs[] = {g.UseRegister(node->InputAt(0))};
-+    InstructionOperand outputs[2];
-+    size_t output_count = 0;
-+    outputs[output_count++] = g.DefineAsRegister(node);
-+
-+    Node* success_output = NodeProperties::FindProjection(node, 1);
-+    if (success_output) {
-+      outputs[output_count++] = g.DefineAsRegister(success_output);
-+    }
- 
--  Node* success_output = NodeProperties::FindProjection(node, 1);
--  if (success_output) {
--    outputs[output_count++] = g.DefineAsRegister(success_output);
-+    this->Emit(kRiscvTruncWD, output_count, outputs, 1, inputs);
-   }
+-void InstructionSelectorT<Adapter>::VisitStackSlot(Node* node) {
+-  StackSlotRepresentation rep = StackSlotRepresentationOf(node->op());
+-  int alignment = rep.alignment();
+-  int slot = frame_->AllocateSpillSlot(rep.size(), alignment);
+-  OperandGenerator g(this);
 -
--  this->Emit(kRiscvTruncWD, output_count, outputs, 1, inputs);
- }
- 
- template <typename Adapter>
- void InstructionSelectorT<Adapter>::VisitTryTruncateFloat64ToUint32(
--    Node* node) {
-+    node_t node) {
+-  Emit(kArchStackSlot, g.DefineAsRegister(node),
+-       sequence()->AddImmediate(Constant(slot)),
+-       sequence()->AddImmediate(Constant(alignment)), 0, nullptr);
++void InstructionSelectorT<Adapter>::VisitStackSlot(node_t node) {
 +  if constexpr (Adapter::IsTurboshaft) {
 +    UNIMPLEMENTED();
 +  } else {
-   RiscvOperandGeneratorT<Adapter> g(this);
-   InstructionOperand inputs[] = {g.UseRegister(node->InputAt(0))};
-   InstructionOperand outputs[2];
-@@ -1240,6 +1248,7 @@ void InstructionSelectorT<Adapter>::VisitTryTruncateFloat64ToUint32(
-   }
- 
-   Emit(kRiscvTruncUwD, output_count, outputs, 1, inputs);
++    StackSlotRepresentation rep = StackSlotRepresentationOf(node->op());
++    int alignment = rep.alignment();
++    int slot = frame_->AllocateSpillSlot(rep.size(), alignment);
++    OperandGenerator g(this);
++
++    Emit(kArchStackSlot, g.DefineAsRegister(node),
++         sequence()->AddImmediate(Constant(slot)),
++         sequence()->AddImmediate(Constant(alignment)), 0, nullptr);
 +  }
  }
  
  template <typename Adapter>
-@@ -1290,7 +1299,11 @@ void InstructionSelectorT<Adapter>::VisitTruncateFloat64ToInt64(node_t node) {
- }
+diff --git a/src/compiler/backend/riscv/instruction-selector-riscv32.cc b/src/compiler/backend/riscv/instruction-selector-riscv32.cc
+index 727605d1f1..abafd91067 100644
+--- a/v8/src/compiler/backend/riscv/instruction-selector-riscv32.cc
++++ b/v8/src/compiler/backend/riscv/instruction-selector-riscv32.cc
+@@ -206,6 +206,7 @@ void InstructionSelectorT<Adapter>::VisitLoad(node_t node) {
+       case MachineRepresentation::kWord64:
+       case MachineRepresentation::kNone:
+       case MachineRepresentation::kSimd256:  // Fall through.
++      case MachineRepresentation::kIndirectPointer:
+         UNREACHABLE();
+     }
  
- template <typename Adapter>
--void InstructionSelectorT<Adapter>::VisitTryTruncateFloat32ToInt64(Node* node) {
-+void InstructionSelectorT<Adapter>::VisitTryTruncateFloat32ToInt64(
-+    node_t node) {
-+  if constexpr (Adapter::IsTurboshaft) {
-+    UNIMPLEMENTED();
-+  } else {
-   RiscvOperandGeneratorT<Adapter> g(this);
-   InstructionOperand inputs[] = {g.UseRegister(node->InputAt(0))};
-   InstructionOperand outputs[2];
-@@ -1303,10 +1316,15 @@ void InstructionSelectorT<Adapter>::VisitTryTruncateFloat32ToInt64(Node* node) {
+@@ -283,6 +284,7 @@ void InstructionSelectorT<TurbofanAdapter>::VisitStore(Node* node) {
+       case MachineRepresentation::kNone:
+       case MachineRepresentation::kWord64:
+       case MachineRepresentation::kSimd256:  // Fall through.
++      case MachineRepresentation::kIndirectPointer:
+         UNREACHABLE();
+     }
+ 
+@@ -824,6 +826,7 @@ void InstructionSelectorT<Adapter>::VisitUnalignedLoad(Node* node) {
+     case MachineRepresentation::kMapWord:            // Fall through.
+     case MachineRepresentation::kWord64:
+     case MachineRepresentation::kNone:
++    case MachineRepresentation::kIndirectPointer:
+       UNREACHABLE();
    }
  
-   this->Emit(kRiscvTruncLS, output_count, outputs, 1, inputs);
-+  }
- }
- 
- template <typename Adapter>
--void InstructionSelectorT<Adapter>::VisitTryTruncateFloat64ToInt64(Node* node) {
-+void InstructionSelectorT<Adapter>::VisitTryTruncateFloat64ToInt64(
-+    node_t node) {
-+  if constexpr (Adapter::IsTurboshaft) {
-+    UNIMPLEMENTED();
-+  } else {
-   RiscvOperandGeneratorT<Adapter> g(this);
-   InstructionOperand inputs[] = {g.UseRegister(node->InputAt(0))};
-   InstructionOperand outputs[2];
-@@ -1319,11 +1337,15 @@ void InstructionSelectorT<Adapter>::VisitTryTruncateFloat64ToInt64(Node* node) {
+@@ -879,6 +882,7 @@ void InstructionSelectorT<Adapter>::VisitUnalignedStore(Node* node) {
+     case MachineRepresentation::kMapWord:  // Fall through.
+     case MachineRepresentation::kNone:
+     case MachineRepresentation::kWord64:
++    case MachineRepresentation::kIndirectPointer:
+       UNREACHABLE();
    }
  
-   Emit(kRiscvTruncLD, output_count, outputs, 1, inputs);
-+  }
- }
- 
- template <typename Adapter>
- void InstructionSelectorT<Adapter>::VisitTryTruncateFloat32ToUint64(
--    Node* node) {
-+    node_t node) {
-+  if constexpr (Adapter::IsTurboshaft) {
-+    UNIMPLEMENTED();
-+  } else {
-   RiscvOperandGeneratorT<Adapter> g(this);
-   InstructionOperand inputs[] = {g.UseRegister(node->InputAt(0))};
-   InstructionOperand outputs[2];
-@@ -1336,11 +1358,15 @@ void InstructionSelectorT<Adapter>::VisitTryTruncateFloat32ToUint64(
-   }
- 
-   Emit(kRiscvTruncUlS, output_count, outputs, 1, inputs);
-+  }
- }
- 
- template <typename Adapter>
- void InstructionSelectorT<Adapter>::VisitTryTruncateFloat64ToUint64(
--    Node* node) {
-+    node_t node) {
-+  if constexpr (Adapter::IsTurboshaft) {
-+    UNIMPLEMENTED();
-+  } else {
-   RiscvOperandGeneratorT<Adapter> g(this);
- 
-   InstructionOperand inputs[] = {g.UseRegister(node->InputAt(0))};
-@@ -1354,6 +1380,7 @@ void InstructionSelectorT<Adapter>::VisitTryTruncateFloat64ToUint64(
-   }
- 
-   Emit(kRiscvTruncUlD, output_count, outputs, 1, inputs);
-+  }
- }
- 
- template <typename Adapter>
