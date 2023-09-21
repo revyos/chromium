@@ -1,3 +1,12 @@
+chromium (117.0.5938.62-1revyos1) UNRELEASED; urgency=medium
+
+  * Add riscv64 support for Chromium 117
+  * Revert some Chromium's FFmpeg commits that makes scripts dependent
+    on Linux x86_64
+  * Remove somehow unused variable in BUILD.gn to stop producing error
+
+ -- Eric Long <i@hack3r.moe>  Thu, 21 Sep 2023 17:05:11 +0800
+
 chromium (117.0.5938.62-1) unstable; urgency=high
 
   [ Andres Salomon]
