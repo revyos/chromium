@@ -1,3 +1,9 @@
+chromium (118.0.5993.70-1revyos1) UNRELEASED; urgency=medium
+
+  * Add riscv64 support for Chromium 118
+
+ -- Eric Long <i@hack3r.moe>  Thu, 12 Oct 2023 13:51:09 +0800
+
 chromium (118.0.5993.70-1) unstable; urgency=high
 
   * New upstream stable release.
