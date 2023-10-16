@@ -14,6 +14,7 @@ fixes/rust-clanglib.patch
 fixes/material-utils.patch
 fixes/perfetto.patch
 fixes/v8-compressed-ptrs.patch
+fixes/opengl-es.patch
 
 upstream/mojo.patch
 upstream/sensor-reading.patch
