@@ -1,0 +1,48 @@
+Description: fix v8 build issue on riscv64 
+Author: Bo YU <tsu.yubo@gmail.com> 
+Last-Update: 2024-01-27
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+--- a/v8/src/codegen/riscv/macro-assembler-riscv.cc
++++ b/v8/src/codegen/riscv/macro-assembler-riscv.cc
+@@ -401,7 +401,7 @@
+   Pop(slot_address_parameter);
+   Pop(object_parameter);
+ 
+-  CallBuiltin(Builtins::GetEphemeronKeyBarrierStub(fp_mode));
++  CallBuiltin(Builtins::EphemeronKeyBarrier(fp_mode));
+   MaybeRestoreRegisters(registers);
+ }
+ 
+@@ -6696,7 +6696,7 @@
+   __ StoreReturnAddressAndCall(function_address);
+   __ bind(&done_api_call);
+ 
+-  Label promote_scheduled_exception;
++  Label propagate_exception;
+   Label delete_allocated_handles;
+   Label leave_exit_frame;
+ 
+@@ -6741,9 +6741,8 @@
+                             "Check if the function scheduled an exception.");
+     __ LoadRoot(scratch2, RootIndex::kTheHoleValue);
+     __ LoadWord(scratch, __ ExternalReferenceAsOperand(
+-                             ER::scheduled_exception_address(isolate), no_reg));
+-    __ Branch(&promote_scheduled_exception, ne, scratch2, Operand(scratch),
+-              Label::Distance::kNear);
++                             ER::exception_address(isolate), no_reg));
++    __ Branch(&propagate_exception, ne, scratch, Operand(scratch2));
+   }
+   {
+     ASM_CODE_COMMENT_STRING(masm, "Convert return value");
+@@ -6771,8 +6770,8 @@
+   }
+ 
+   __ RecordComment("Re-throw by promoting a scheduled exception.");
+-  __ bind(&promote_scheduled_exception);
+-  __ TailCallRuntime(Runtime::kPromoteScheduledException);
++  __ bind(&propagate_exception);
++  __ TailCallRuntime(Runtime::kPropagateException);
+ 
+   {
+     ASM_CODE_COMMENT_STRING(
