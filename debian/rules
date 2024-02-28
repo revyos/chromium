@@ -110,6 +110,7 @@ defines+=use_gio=true \
          proprietary_codecs=true \
          ffmpeg_branding=\"Chrome\" \
          disable_fieldtrial_testing_config=true \
+         enable_validating_command_decoder=true \
 
 # handle parallel build options
 njobs=1

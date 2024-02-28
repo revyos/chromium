@@ -1,3 +1,13 @@
+chromium (121.0.6167.160-1revyos1) UNRELEASED; urgency=medium
+
+  [ Bo YU ]
+  * Add riscv64 support
+
+  [ Eric Long ]
+  * Re-enable EGL path for OpenGL ES-only Linux systems
+
+ -- Eric Long <i@hack3r.moe>  Mon, 19 Feb 2024 14:15:51 +0000
+
 chromium (121.0.6167.160-1) unstable; urgency=high
 
   * New upstream security release.
