@@ -34,7 +34,7 @@ Build-Depends:
  bison,
  nodejs,
  rollup,
- valgrind,
+ valgrind [!riscv64],
  xz-utils,
  x11-apps,
  xcb-proto,
