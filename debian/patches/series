@@ -143,3 +143,4 @@ riscv64/sandbox.patch
 riscv64/HACK-devtools-remove-terser.patch
 riscv64/fix-bubble_contents_wrapper.h-static-assert.patch
 riscv64/cpuinfo.patch
+riscv64/disable-cpuinfo.patch

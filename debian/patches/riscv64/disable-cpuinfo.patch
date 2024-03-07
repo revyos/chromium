@@ -1,0 +1,11 @@
+--- a/third_party/cpuinfo/cpuinfo.gni
++++ b/third_party/cpuinfo/cpuinfo.gni
+@@ -6,6 +6,8 @@
+     # cpuinfo is not supported on these chips.
+     current_cpu != "ppc64" && current_cpu != "ppc64le" &&
+     current_cpu != "s390" && current_cpu != "s390x" &&
++    # cpuinfo on riscv64 relies on unavailable sys/cpuinfo.h
++    current_cpu != "riscv64" &&
+     # cpuinfo is not supported on fuchsia.
+     !is_fuchsia &&
+     # There's a few arm architectures that are not supported by cpuinfo,
