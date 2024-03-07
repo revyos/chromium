@@ -142,3 +142,4 @@ riscv64/remove-blink-BUILD-gn-unused.patch
 riscv64/sandbox.patch
 riscv64/HACK-devtools-remove-terser.patch
 riscv64/fix-bubble_contents_wrapper.h-static-assert.patch
+riscv64/cpuinfo.patch
