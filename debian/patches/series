@@ -143,12 +143,8 @@ ppc64le/third_party/0002-Highway-disable-128-bit-vsx.patch
 #ppc64le/core/baseline-isa-3-0.patch
 
 riscv64/dav1d.patch
-riscv64/ffmpeg-config.patch
+riscv64/ffmpeg.patch
 riscv64/fix-rustc-build.patch
 riscv64/fix-rust-ld.patch
-riscv64/remove-blink-BUILD-gn-unused.patch
 riscv64/sandbox.patch
 riscv64/HACK-devtools-remove-terser.patch
-riscv64/fix-bubble_contents_wrapper.h-static-assert.patch
-riscv64/cpuinfo.patch
-riscv64/disable-cpuinfo.patch

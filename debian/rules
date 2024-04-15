@@ -15,8 +15,8 @@ export DEB_RULES_REQUIRES_ROOT=no
 # compile with clang (gcc is currently not supported)
 export AR=ar
 export NM=nm
-export CC=clang-16
-export CXX=clang++-16
+export CC=clang-17
+export CXX=clang++-17
 
 # initial flags from dpkg-buildflags
 export DEB_CXXFLAGS_MAINT_STRIP=-g
@@ -66,6 +66,9 @@ endif
 ifeq (armhf,$(DEB_HOST_ARCH))
 defines+=host_cpu=\"arm\" use_v4l2_codec=true use_vaapi=false arm_use_neon=true
 endif
+ifeq (riscv64,$(DEB_HOST_ARCH))
+defines+=host_cpu=\"riscv64\" enable_validating_command_decoder=true
+endif
 
 # disabled features
 defines+=is_debug=false \
@@ -111,7 +114,6 @@ defines+=use_gio=true \
          proprietary_codecs=true \
          ffmpeg_branding=\"Chrome\" \
          disable_fieldtrial_testing_config=true \
-         enable_validating_command_decoder=true \
 
 # handle parallel build options
 njobs=1
