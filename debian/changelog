@@ -1,3 +1,10 @@
+chromium (125.0.6422.60-1revyos1) UNRELEASED; urgency=medium
+
+  * Non-maintainer upload.
+  * Add support for riscv64
+
+ -- Eric Long <i@hack3r.moe>  Fri, 17 May 2024 23:30:33 +0800
+
 chromium (125.0.6422.60-1) unstable; urgency=high
 
   * New upstream stable release.

@@ -1,5 +1,3 @@
-diff --git a/third_party/devtools-frontend/src/scripts/build/rollup.config.js b/third_party/devtools-frontend/src/scripts/build/rollup.config.js
-index fe205b0327..fa35ad2e50 100644
 --- a/third_party/devtools-frontend/src/scripts/build/rollup.config.js
 +++ b/third_party/devtools-frontend/src/scripts/build/rollup.config.js
 @@ -5,7 +5,6 @@
@@ -10,15 +8,11 @@ index fe205b0327..fa35ad2e50 100644
  
  const devtools_plugin = require('./devtools_plugin.js');
  
-@@ -19,11 +18,6 @@ export default commandLineArgs => ({
+@@ -19,7 +18,6 @@
      sourcemap: Boolean(commandLineArgs.configSourcemaps),
    }],
    plugins: [
--    terser({
--      compress: {
--        pure_funcs: commandLineArgs.configDCHECK ? ['Platform.DCHECK'] : [],
--      },
--    }),
+-    terser(),
      {
        name: 'devtools-plugin',
        resolveId(source, importer) {
