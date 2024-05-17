@@ -13,14 +13,26 @@ fixes/blink-frags.patch
 fixes/absl-optional.patch
 fixes/libxml-parseerr.patch
 fixes/strlcpy.patch
-fixes/optional2.patch
 fixes/stats-collector.patch
-fixes/blink-fonts-shape-result.patch
+fixes/bad-font-gc00000.patch
+fixes/bad-font-gc0000.patch
+fixes/bad-font-gc000.patch
+fixes/bad-font-gc00.patch
+fixes/bad-font-gc0.patch
 fixes/bad-font-gc1.patch
+fixes/bad-font-gc11.patch
 fixes/bad-font-gc2.patch
+fixes/bad-font-gc3.patch
 
 upstream/mojo.patch
-upstream/std-to-address.patch
+upstream/mojo-null.patch
+upstream/ruy-include.patch
+upstream/vulkan-include.patch
+upstream/mojo-bindings-include.patch
+upstream/appservice-include.patch
+upstream/no-vector-consts.patch
+upstream/lens-include.patch
+upstream/ninja.patch
 
 disable/tests.patch
 disable/unrar.patch
@@ -49,9 +61,8 @@ system/rapidjson.patch
 system/rollup.patch
 
 bookworm/clang16.patch
-bookworm/constexpr-equality.patch
 bookworm/nvt.patch
-bookworm/nvt2.patch
+bookworm/v8-wrappable.patch
 bookworm/rust-downgrade-osstr-users.patch
 
 # Ungoogled Chromium
@@ -59,7 +70,6 @@ ungoogled/disable-privacy-sandbox.patch
 
 # i386 support
 i386/support-i386.patch
-i386/angle-lockfree.patch
 
 # POWER support
 ppc64le/sandbox/0001-linux-seccomp-bpf-ppc64-glibc-workaround-in-SIGSYS-h.patch
@@ -84,6 +94,7 @@ ppc64le/third_party/0001-Add-PPC64-support-for-boringssl.patch
 ppc64le/third_party/0001-third_party-libvpx-Properly-generate-gni-on-ppc64.patch
 ppc64le/third_party/0001-third_party-lss-Don-t-look-for-mmap2-on-ppc64.patch
 ppc64le/third_party/0001-third_party-pffft-Include-altivec.h-on-ppc64-with-SI.patch
+ppc64le/third_party/0002-Add-PPC64-generated-files-for-boringssl.patch
 ppc64le/third_party/0002-third_party-lss-kernel-structs.patch
 
 ppc64le/webrtc/Rtc_base-system-arch.h-PPC.patch
@@ -98,7 +109,6 @@ ppc64le/libaom/0001-Add-ppc64-target-to-libaom.patch
 ppc64le/libaom/0001-Add-pregenerated-config-for-libaom-on-ppc64.patch
 
 ppc64le/third_party/0002-third_party-libvpx-Remove-bad-ppc64-config.patch
-ppc64le/third_party/0002-third-party-boringssl-add-generated-files.patch
 ppc64le/third_party/0003-third_party-libvpx-Add-ppc64-generated-config.patch
 # Enabling VSX causes artifacts to appear in VP9 videos
 #ppc64le/third_party/0003-third_party-libvpx-Add-ppc64-vsx-files.patch
@@ -118,12 +128,8 @@ ppc64le/fixes/fix-rust-linking.patch
 ppc64le/fixes/fix-breakpad-compile.patch
 ppc64le/fixes/fix-partition-alloc-compile.patch
 ppc64le/v8/0002-Add-ppc64-trap-instructions.patch
-ppc64le/third_party/0001-Fix-highway-ppc-hwcap.patch
 
-ppc64le/third_party/0001-Add-PPC64-support-for-libdav1d.patch
-ppc64le/third_party/0001-Fix-libdav1d-compilation-on-clang-ppc.patch
 ppc64le/sandbox/fix-ppc64-linux-syscalls-headers.patch
-ppc64le/third_party/0003-thirdparty-fix-dav1d-gn.patch
 ppc64le/third_party/use-sysconf-page-size-on-ppc64.patch
 
 ppc64le/third_party/dawn-fix-typos.patch
@@ -131,12 +137,6 @@ ppc64le/third_party/dawn-fix-ppc64le-detection.patch
 
 # Suppress harmless compiler warning messages that appear on ppc64 due to arch-specific warning flags being passed
 ppc64le/fixes/fix-unknown-warning-option-messages.diff
-
-# Needed on Debian while POWER8 remains the build target
-# POWER9 enables hardware 128 bit vector support (ISA 3.0),
-# and Highway gets confused when building in POWER8 mode
-# (POWER8 compiler flags) on POWER9 hosts.
-ppc64le/third_party/0002-Highway-disable-128-bit-vsx.patch
 
 # These patches enable full POWER ISA 3.0 (POWER9) acceleration when applied
 # They will not work on POWER8 (ISA 2.07) or below
