@@ -11,7 +11,7 @@ fixes/material-utils.patch
 fixes/perfetto.patch
 fixes/blink-frags.patch
 fixes/absl-optional.patch
-fixes/libxml-parseerr.patch
+#fixes/libxml-parseerr.patch
 fixes/strlcpy.patch
 fixes/stats-collector.patch
 fixes/bad-font-gc00000.patch
