@@ -67,7 +67,7 @@ ifeq (armhf,$(DEB_HOST_ARCH))
 defines+=host_cpu=\"arm\" use_v4l2_codec=true use_vaapi=false arm_use_neon=true
 endif
 ifeq (riscv64,$(DEB_HOST_ARCH))
-defines+=host_cpu=\"riscv64\" enable_validating_command_decoder=true
+defines+=host_cpu=\"riscv64\"
 endif
 
 # disabled features
