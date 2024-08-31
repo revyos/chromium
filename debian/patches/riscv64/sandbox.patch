@@ -1,8 +1,22 @@
-Description: Chromium sandbox support riscv64 
-Origin: https://chromium-review.googlesource.com/c/chromium/src/+/4935120
-Last-Update: 2024-01-12
+From 90499f55f949f95b01c84257d306cf209c04b431 Mon Sep 17 00:00:00 2001
+From: Andreas Schwab <schwab@suse.de>
+Date: Fri, 04 Mar 2022 15:27:35 +0100
+Subject: [PATCH] Add support for riscv64-linux
+
+Change-Id: Ibcdaaba1b0c92a1cd85361b9859370c686832c49
 ---
-This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+
+--- a/sandbox/features.gni
++++ b/sandbox/features.gni
+@@ -10,7 +10,7 @@
+                   (current_cpu == "x86" || current_cpu == "x64" ||
+                    current_cpu == "arm" || current_cpu == "arm64" ||
+                    current_cpu == "mipsel" || current_cpu == "mips64el" ||
+-                   current_cpu == "ppc64")
++                   current_cpu == "ppc64" || current_cpu == "riscv64")
+ 
+ # SSBD (Speculative Store Bypass Disable) is a mitigation of Spectre Variant 4.
+ # As Spectre Variant 4 can be mitigated by site isolation, opt-out SSBD on site
 --- a/sandbox/linux/bpf_dsl/linux_syscall_ranges.h
 +++ b/sandbox/linux/bpf_dsl/linux_syscall_ranges.h
 @@ -63,6 +63,13 @@
@@ -19,6 +33,112 @@ This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
  #else
  #error "Unsupported architecture"
  #endif
+--- a/sandbox/linux/bpf_dsl/seccomp_macros.h
++++ b/sandbox/linux/bpf_dsl/seccomp_macros.h
+@@ -347,6 +347,48 @@
+ #define SECCOMP_PT_PARM5(_regs) (_regs).regs[4]
+ #define SECCOMP_PT_PARM6(_regs) (_regs).regs[5]
+ 
++#elif defined(__riscv)
++struct regs_struct {
++  unsigned long regs[32];
++};
++
++#define SECCOMP_ARCH AUDIT_ARCH_RISCV64
++
++#define SECCOMP_REG(_ctx, _reg) ((_ctx)->uc_mcontext.__gregs[_reg])
++
++#define SECCOMP_RESULT(_ctx) SECCOMP_REG(_ctx, REG_A0)
++#define SECCOMP_SYSCALL(_ctx) SECCOMP_REG(_ctx, REG_A0+7)
++#define SECCOMP_IP(_ctx) (_ctx)->uc_mcontext.__gregs[REG_PC]
++#define SECCOMP_PARM1(_ctx) SECCOMP_REG(_ctx, REG_A0)
++#define SECCOMP_PARM2(_ctx) SECCOMP_REG(_ctx, REG_A0+1)
++#define SECCOMP_PARM3(_ctx) SECCOMP_REG(_ctx, REG_A0+2)
++#define SECCOMP_PARM4(_ctx) SECCOMP_REG(_ctx, REG_A0+3)
++#define SECCOMP_PARM5(_ctx) SECCOMP_REG(_ctx, REG_A0+4)
++#define SECCOMP_PARM6(_ctx) SECCOMP_REG(_ctx, REG_A0+5)
++#define SECCOMP_PARM7(_ctx) SECCOMP_REG(_ctx, REG_A0+6)
++
++#define SECCOMP_NR_IDX (offsetof(struct arch_seccomp_data, nr))
++#define SECCOMP_ARCH_IDX (offsetof(struct arch_seccomp_data, arch))
++#define SECCOMP_IP_MSB_IDX \
++  (offsetof(struct arch_seccomp_data, instruction_pointer) + 4)
++#define SECCOMP_IP_LSB_IDX \
++  (offsetof(struct arch_seccomp_data, instruction_pointer) + 0)
++#define SECCOMP_ARG_MSB_IDX(nr) \
++  (offsetof(struct arch_seccomp_data, args) + 8 * (nr) + 4)
++#define SECCOMP_ARG_LSB_IDX(nr) \
++  (offsetof(struct arch_seccomp_data, args) + 8 * (nr) + 0)
++
++#define SECCOMP_PT_RESULT(_regs) (_regs).regs[REG_A0]
++#define SECCOMP_PT_SYSCALL(_regs) (_regs).regs[REG_A0+7]
++#define SECCOMP_PT_IP(_regs) (_regs).regs[REG_PC]
++#define SECCOMP_PT_PARM1(_regs) (_regs).regs[REG_A0]
++#define SECCOMP_PT_PARM2(_regs) (_regs).regs[REG_A0+1]
++#define SECCOMP_PT_PARM3(_regs) (_regs).regs[REG_A0+2]
++#define SECCOMP_PT_PARM4(_regs) (_regs).regs[REG_A0+3]
++#define SECCOMP_PT_PARM5(_regs) (_regs).regs[REG_A0+4]
++#define SECCOMP_PT_PARM6(_regs) (_regs).regs[REG_A0+5]
++#define SECCOMP_PT_PARM7(_regs) (_regs).regs[REG_A0+6]
++
+ #elif defined(__powerpc64__)
+ #include <asm/ptrace.h>
+ 
+--- a/sandbox/linux/integration_tests/bpf_dsl_seccomp_unittest.cc
++++ b/sandbox/linux/integration_tests/bpf_dsl_seccomp_unittest.cc
+@@ -22,6 +22,7 @@
+ #include <sys/types.h>
+ #include <sys/utsname.h>
+ #include <unistd.h>
++#include <linux/elf.h>
+ 
+ #include <memory>
+ #include <vector>
+@@ -2034,7 +2035,15 @@
+     BPF_ASSERT_EQ(kTraceData, data);
+ 
+     regs_struct regs;
++#if defined(__riscv)
++    iovec iov;
++    iov.iov_base = &regs;
++    iov.iov_len = sizeof(regs);
++    BPF_ASSERT_NE(-1, ptrace(PTRACE_GETREGSET, pid,
++                             reinterpret_case<void*>(NT_PRSTATUS), &iov));
++#else
+     BPF_ASSERT_NE(-1, ptrace(PTRACE_GETREGS, pid, NULL, &regs));
++#endif
+     switch (SECCOMP_PT_SYSCALL(regs)) {
+       case __NR_write:
+         // Skip writes to stdout, make it return kExpectedReturnValue.  Allow
+@@ -2042,7 +2051,14 @@
+         if (SECCOMP_PT_PARM1(regs) == STDOUT_FILENO) {
+           BPF_ASSERT_NE(-1, SetSyscall(pid, &regs, -1));
+           SECCOMP_PT_RESULT(regs) = kExpectedReturnValue;
++#if defined(__riscv)
++          iov.iov_len = sizeof(regs);
++          BPF_ASSERT_NE(-1, ptrace(PTRACE_SETREGSET, pid,
++                                   reinterpret_cast<void*>(NT_PRSTATUS),
++                                   &iov));
++#else
+           BPF_ASSERT_NE(-1, ptrace(PTRACE_SETREGS, pid, NULL, &regs));
++#endif
+         }
+         break;
+ 
+@@ -2050,7 +2066,13 @@
+         // Rewrite to exit(kExpectedReturnValue).
+         BPF_ASSERT_NE(-1, SetSyscall(pid, &regs, __NR_exit));
+         SECCOMP_PT_PARM1(regs) = kExpectedReturnValue;
++#if defined(__riscv)
++        iov.iov_len = sizeof(regs);
++        BPF_ASSERT_NE(-1, ptrace(PTRACE_SETREGSET, pid,
++                                 reinterpret_cast<void*>(NT_PRSTATUS), &iov));
++#else
+         BPF_ASSERT_NE(-1, ptrace(PTRACE_SETREGS, pid, NULL, &regs));
++#endif
+         break;
+ 
+       default:
 --- a/sandbox/linux/seccomp-bpf-helpers/baseline_policy.cc
 +++ b/sandbox/linux/seccomp-bpf-helpers/baseline_policy.cc
 @@ -60,6 +60,9 @@
@@ -67,6 +187,68 @@ This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
    if (sysno == __NR_pipe) {
      return Allow();
    }
+--- a/sandbox/linux/seccomp-bpf-helpers/baseline_policy_unittest.cc
++++ b/sandbox/linux/seccomp-bpf-helpers/baseline_policy_unittest.cc
+@@ -275,7 +275,7 @@
+ }
+ 
+ // Not all architectures can restrict the domain for socketpair().
+-#if defined(__x86_64__) || defined(__arm__) || defined(__aarch64__)
++#if defined(__x86_64__) || defined(__arm__) || defined(__aarch64__) || defined(__riscv)
+ BPF_DEATH_TEST_C(BaselinePolicy,
+                  SocketpairWrongDomain,
+                  DEATH_SEGV_MESSAGE(GetErrorMessageContentForTests()),
+@@ -284,7 +284,7 @@
+   std::ignore = socketpair(AF_INET, SOCK_STREAM, 0, sv);
+   _exit(1);
+ }
+-#endif  // defined(__x86_64__) || defined(__arm__) || defined(__aarch64__)
++#endif  // defined(__x86_64__) || defined(__arm__) || defined(__aarch64__) || defined(__riscv)
+ 
+ BPF_TEST_C(BaselinePolicy, EPERM_open, BaselinePolicy) {
+   errno = 0;
+@@ -348,7 +348,7 @@
+ TEST_BASELINE_SIGSYS(__NR_syslog)
+ TEST_BASELINE_SIGSYS(__NR_timer_create)
+ 
+-#if !defined(__aarch64__)
++#if !defined(__aarch64__) && !defined(__riscv)
+ TEST_BASELINE_SIGSYS(__NR_inotify_init)
+ #if !defined(__powerpc64__)
+ TEST_BASELINE_SIGSYS(__NR_vserver)
+--- a/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions.cc
++++ b/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions.cc
+@@ -36,7 +36,7 @@
+ #include "sandbox/linux/system_headers/linux_time.h"
+ 
+ #if (BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS_LACROS)) && \
+-    !defined(__arm__) && !defined(__aarch64__) && !defined(__powerpc64__) && \
++    !defined(__arm__) && !defined(__aarch64__) && !defined(__powerpc64__) && !defined(__riscv) && \
+     !defined(PTRACE_GET_THREAD_AREA)
+ // Also include asm/ptrace-abi.h since ptrace.h in older libc (for instance
+ // the one in Ubuntu 16.04 LTS) is missing PTRACE_GET_THREAD_AREA.
+@@ -488,8 +488,10 @@
+ #endif
+   return Switch(request)
+       .Cases({
+-#if !defined(__aarch64__) && !defined(__powerpc64__)
++#if !defined(__aarch64__) && !defined(__powerpc64__) && !defined(__riscv)
+                  PTRACE_GETREGS, PTRACE_GETFPREGS, PTRACE_GET_THREAD_AREA,
++#endif
++#if !defined(__aarch64__) && !defined(__powerpc64__)
+                  PTRACE_GETREGSET,
+ #endif
+ #if defined(__arm__)
+--- a/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions_unittests.cc
++++ b/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions_unittests.cc
+@@ -7,6 +7,7 @@
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <linux/elf.h>
++#include <asm/ptrace.h>
+ #include <sched.h>
+ #include <sys/prctl.h>
+ #include <sys/ptrace.h>
 --- a/sandbox/linux/seccomp-bpf-helpers/syscall_sets.cc
 +++ b/sandbox/linux/seccomp-bpf-helpers/syscall_sets.cc
 @@ -106,7 +106,7 @@
@@ -152,7 +334,7 @@ This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
      case __NR_set_tid_address:
      case __NR_unshare:
 -#if !defined(__mips__) && !defined(__aarch64__) || defined(__powerpc64__)
-+#if !defined(__mips__) && !defined(__aarch64__) && defined(__powerpc64__) && !defined(__riscv)
++#if !defined(__mips__) && !defined(__aarch64__) || defined(__powerpc64__) || defined(__riscv)
      case __NR_vfork:
  #endif
      default:
@@ -255,16 +437,14 @@ This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
      case __NR_eventfd:
  #endif
      case __NR_eventfd2:
-@@ -919,7 +919,8 @@
+@@ -919,6 +919,7 @@
  }
  
  #if defined(__x86_64__) || defined(__arm__) || defined(__aarch64__) || \
--    (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_64_BITS))
-+    (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_64_BITS)) || \
-+    defined(__riscv)
++    defined(__riscv) ||                                                \
+     (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_64_BITS))
  bool SyscallSets::IsSystemVSemaphores(int sysno) {
    switch (sysno) {
-     case __NR_semctl:
 @@ -940,7 +941,7 @@
  #if defined(__i386__) || defined(__x86_64__) || defined(__arm__) || \
      defined(__aarch64__) ||                                         \
@@ -274,26 +454,22 @@ This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
  // These give a lot of ambient authority and bypass the setuid sandbox.
  bool SyscallSets::IsSystemVSharedMemory(int sysno) {
    switch (sysno) {
-@@ -956,7 +957,8 @@
+@@ -956,6 +957,7 @@
  #endif
  
  #if defined(__x86_64__) || defined(__arm__) || defined(__aarch64__) || \
--    (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_64_BITS))
-+    defined(__riscv) || 					\
-+    (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_64_BITS)) 
++    defined(__riscv) ||                                                \
+     (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_64_BITS))
  bool SyscallSets::IsSystemVMessageQueue(int sysno) {
    switch (sysno) {
-     case __NR_msgctl:
-@@ -988,7 +990,8 @@
+@@ -988,6 +990,7 @@
  
  bool SyscallSets::IsAnySystemV(int sysno) {
  #if defined(__x86_64__) || defined(__arm__) || defined(__aarch64__) || \
--    (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_64_BITS))
-+    defined(__riscv)						||	\
-+    (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_64_BITS)) 
++    defined(__riscv) ||                                                \
+     (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_64_BITS))
    return IsSystemVMessageQueue(sysno) || IsSystemVSemaphores(sysno) ||
           IsSystemVSharedMemory(sysno);
- #elif defined(__i386__) || \
 @@ -1026,7 +1029,7 @@
  bool SyscallSets::IsInotify(int sysno) {
    switch (sysno) {
@@ -303,7 +479,7 @@ This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
      case __NR_inotify_init:
  #endif
      case __NR_inotify_init1:
-@@ -1171,7 +1174,7 @@
+@@ -1168,7 +1171,7 @@
  #if defined(__x86_64__) || defined(__powerpc64__)
      case __NR_tuxcall:
  #endif
@@ -312,13 +488,14 @@ This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
      case __NR_vserver:
  #endif
        return true;
-@@ -1230,6 +1233,17 @@
+@@ -1227,6 +1230,18 @@
  }
  #endif  // defined(__mips__)
  
 +#if defined(__riscv)
 +bool SyscallSets::IsRiscvPrivate(int sysno) {
 +  switch (sysno) {
++    case __NR_riscv_hwprobe:
 +    case __NR_riscv_flush_icache:
 +      return true;
 +    default:
@@ -341,12 +518,13 @@ This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
    static bool IsNetworkSocketInformation(int sysno);
  #endif
  
-@@ -80,25 +80,25 @@
+@@ -80,19 +80,21 @@
    static bool IsAsyncIo(int sysno);
    static bool IsKeyManagement(int sysno);
  #if defined(__x86_64__) || defined(__arm__) || defined(__aarch64__) || \
 -    (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_64_BITS))
-+    (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_64_BITS)) || defined(__riscv)
++    (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_64_BITS)) || \
++    defined(__riscv)
    static bool IsSystemVSemaphores(int sysno);
  #endif
  #if defined(__i386__) || defined(__x86_64__) || defined(__arm__) || \
@@ -360,18 +538,12 @@ This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
  
  #if defined(__x86_64__) || defined(__arm__) || defined(__aarch64__) || \
 -    (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_64_BITS))
-+    (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_64_BITS)) || defined(__riscv)
++    (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_64_BITS)) || \
++    defined(__riscv)
    static bool IsSystemVMessageQueue(int sysno);
  #endif
  
- #if defined(__i386__) || \
-     (defined(ARCH_CPU_MIPS_FAMILY) && defined(ARCH_CPU_32_BITS)) || \
--    defined(__powerpc64__)
-+    defined(__powerpc64__) || defined(__riscv)
-   // Big system V multiplexing system call.
-   static bool IsSystemVIpc(int sysno);
- #endif
-@@ -120,6 +120,9 @@
+@@ -120,6 +122,9 @@
    static bool IsMipsPrivate(int sysno);
    static bool IsMipsMisc(int sysno);
  #endif  // defined(__mips__)
@@ -383,17 +555,16 @@ This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
  
 --- a/sandbox/linux/seccomp-bpf/syscall.cc
 +++ b/sandbox/linux/seccomp-bpf/syscall.cc
-@@ -18,7 +18,8 @@
+@@ -23,7 +23,7 @@
  namespace {
  
  #if defined(ARCH_CPU_X86_FAMILY) || defined(ARCH_CPU_ARM_FAMILY) || \
 -    defined(ARCH_CPU_MIPS_FAMILY) || defined (ARCH_CPU_PPC64_FAMILY)
-+    defined(ARCH_CPU_MIPS_FAMILY) || defined (ARCH_CPU_PPC64_FAMILY) || \
-+	defined(ARCH_CPU_RISCV_FAMILY)
++    defined(ARCH_CPU_MIPS_FAMILY) || defined (ARCH_CPU_PPC64_FAMILY) || defined(ARCH_CPU_RISCV_FAMILY)
  // Number that's not currently used by any Linux kernel ABIs.
  const int kInvalidSyscallNumber = 0x351d3;
  #else
-@@ -352,6 +353,28 @@
+@@ -357,6 +357,28 @@
  
      ".cfi_endproc\n"
      ".size SyscallAsm, .-SyscallAsm\n"
@@ -422,7 +593,7 @@ This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
  #endif
      );  // asm
  
-@@ -363,6 +386,10 @@
+@@ -368,6 +390,10 @@
  extern "C" {
  intptr_t SyscallAsm(intptr_t nr, const intptr_t args[8]);
  }
@@ -433,7 +604,7 @@ This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
  #endif
  
  }  // namespace
-@@ -395,6 +422,10 @@
+@@ -400,6 +426,10 @@
    //                 where that makes sense.
  #if defined(__mips__)
    const intptr_t args[8] = {p0, p1, p2, p3, p4, p5, p6, p7};
@@ -444,14 +615,57 @@ This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
  #else
    DCHECK_EQ(p6, 0) << " Support for syscalls with more than six arguments not "
                        "added for this architecture";
-@@ -471,6 +502,8 @@
+@@ -474,7 +504,7 @@
+     ret = inout;
+   }
  
- #elif defined(__powerpc64__)
+-#elif defined(__powerpc64__)
++#elif defined(__powerpc64__) || defined(__riscv)
    intptr_t ret = SyscallAsm(nr, args);
-+#elif defined(__riscv)
-+  intptr_t ret = SyscallAsm(nr, args);
  #else
  #error "Unimplemented architecture"
+--- a/sandbox/linux/seccomp-bpf/trap.cc
++++ b/sandbox/linux/seccomp-bpf/trap.cc
+@@ -221,6 +221,18 @@
+                        SECCOMP_PARM6(ctx),
+                        SECCOMP_PARM7(ctx),
+                        SECCOMP_PARM8(ctx));
++#elif defined(__riscv)
++    // RISC-V supports up to seven arguments for syscall.
++    // However, seccomp bpf can filter only up to six arguments, so using seven
++    // arguments has sense only when using UnsafeTrap() handler.
++    rc = Syscall::Call(SECCOMP_SYSCALL(ctx),
++                       SECCOMP_PARM1(ctx),
++                       SECCOMP_PARM2(ctx),
++                       SECCOMP_PARM3(ctx),
++                       SECCOMP_PARM4(ctx),
++                       SECCOMP_PARM5(ctx),
++                       SECCOMP_PARM6(ctx),
++                       SECCOMP_PARM7(ctx));
+ #else
+     rc = Syscall::Call(SECCOMP_SYSCALL(ctx),
+                        SECCOMP_PARM1(ctx),
+--- a/sandbox/linux/services/credentials.cc
++++ b/sandbox/linux/services/credentials.cc
+@@ -85,7 +85,7 @@
+   pid_t pid = -1;
+   alignas(16) char stack_buf[PTHREAD_STACK_MIN];
+ #if defined(ARCH_CPU_X86_FAMILY) || defined(ARCH_CPU_ARM_FAMILY) || \
+-    defined(ARCH_CPU_MIPS_FAMILY) || defined(ARCH_CPU_PPC64_FAMILY)
++    defined(ARCH_CPU_MIPS_FAMILY) || defined(ARCH_CPU_PPC64_FAMILY) || defined(ARCH_CPU_RISCV_FAMILY)
+   // The stack grows downward.
+   void* stack = stack_buf + sizeof(stack_buf);
+ #else
+--- a/sandbox/linux/services/syscall_wrappers.cc
++++ b/sandbox/linux/services/syscall_wrappers.cc
+@@ -61,7 +61,7 @@
+ #if defined(ARCH_CPU_X86_64)
+   return syscall(__NR_clone, flags, child_stack, ptid, ctid, tls);
+ #elif defined(ARCH_CPU_X86) || defined(ARCH_CPU_ARM_FAMILY) || \
+-    defined(ARCH_CPU_MIPS_FAMILY) || defined(ARCH_CPU_PPC64_FAMILY)
++    defined(ARCH_CPU_MIPS_FAMILY) || defined(ARCH_CPU_PPC64_FAMILY) || defined(ARCH_CPU_RISCV_FAMILY)
+   // CONFIG_CLONE_BACKWARDS defined.
+   return syscall(__NR_clone, flags, child_stack, ptid, tls, ctid);
  #endif
 --- a/sandbox/linux/syscall_broker/broker_process.cc
 +++ b/sandbox/linux/syscall_broker/broker_process.cc
@@ -551,6 +765,17 @@ This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
  // For prctl.h
  #ifndef PR_SET_SECCOMP
  #define PR_SET_SECCOMP               22
+--- a/sandbox/linux/system_headers/linux_signal.h
++++ b/sandbox/linux/system_headers/linux_signal.h
+@@ -13,7 +13,7 @@
+ // (not undefined, but defined different values and in different memory
+ // layouts). So, fill the gap here.
+ #if defined(__i386__) || defined(__x86_64__) || defined(__arm__) || \
+-    defined(__aarch64__) || defined(__powerpc64__)
++    defined(__aarch64__) || defined(__powerpc64__) || defined(__riscv)
+ 
+ #define LINUX_SIGHUP 1
+ #define LINUX_SIGINT 2
 --- a/sandbox/linux/system_headers/linux_stat.h
 +++ b/sandbox/linux/system_headers/linux_stat.h
 @@ -150,7 +150,7 @@
@@ -576,7 +801,7 @@ This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
  
 --- /dev/null
 +++ b/sandbox/linux/system_headers/riscv64_linux_syscalls.h
-@@ -0,0 +1,1222 @@
+@@ -0,0 +1,1226 @@
 +// Copyright 2014 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -1562,6 +1787,10 @@ This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
 +#define __NR_recvmmsg 243
 +#endif
 +
++#if !defined(__NR_riscv_hwprobe)
++#define __NR_riscv_hwprobe 258
++#endif
++
 +#if !defined(__NR_riscv_flush_icache)
 +#define __NR_riscv_flush_icache 259
 +#endif
@@ -1799,6 +2028,17 @@ This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
 +#endif
 +
 +#endif  // SANDBOX_LINUX_SYSTEM_HEADERS_RISCV64_LINUX_SYSCALLS_H_
+--- a/sandbox/policy/linux/bpf_cdm_policy_linux.cc
++++ b/sandbox/policy/linux/bpf_cdm_policy_linux.cc
+@@ -33,7 +33,7 @@
+     case __NR_ftruncate:
+     case __NR_fallocate:
+ #if defined(__i386__) || defined(__x86_64__) || defined(__mips__) || \
+-    defined(__aarch64__)
++    defined(__aarch64__) || defined(__riscv)
+     case __NR_getrlimit:
+ #endif
+ #if defined(__i386__) || defined(__arm__)
 --- a/sandbox/policy/linux/bpf_cros_amd_gpu_policy_linux.cc
 +++ b/sandbox/policy/linux/bpf_cros_amd_gpu_policy_linux.cc
 @@ -38,7 +38,7 @@
@@ -1823,7 +2063,7 @@ This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
      case __NR_getdents64:
 --- a/sandbox/policy/linux/bpf_network_policy_linux.cc
 +++ b/sandbox/policy/linux/bpf_network_policy_linux.cc
-@@ -255,7 +255,7 @@
+@@ -260,7 +260,7 @@
      case __NR_fdatasync:
      case __NR_fsync:
      case __NR_mremap:
@@ -1832,240 +2072,6 @@ This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
      case __NR_getdents:
  #endif
      case __NR_getdents64:
---- a/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions.cc
-+++ b/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions.cc
-@@ -37,6 +37,7 @@
- 
- #if (BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS_LACROS)) && \
-     !defined(__arm__) && !defined(__aarch64__) && !defined(__powerpc64__) && \
-+    !defined(__riscv) && \
-     !defined(PTRACE_GET_THREAD_AREA)
- // Also include asm/ptrace-abi.h since ptrace.h in older libc (for instance
- // the one in Ubuntu 16.04 LTS) is missing PTRACE_GET_THREAD_AREA.
-@@ -484,7 +485,7 @@
- #endif
-   return Switch(request)
-       .Cases({
--#if !defined(__aarch64__) && !defined(__powerpc64__)
-+#if !defined(__aarch64__) && !defined(__powerpc64__) && !defined(__riscv)
-                  PTRACE_GETREGS, PTRACE_GETFPREGS, PTRACE_GET_THREAD_AREA,
-                  PTRACE_GETREGSET,
- #endif
---- a/sandbox/linux/services/credentials.cc
-+++ b/sandbox/linux/services/credentials.cc
-@@ -80,7 +80,8 @@
-   pid_t pid = -1;
-   alignas(16) char stack_buf[PTHREAD_STACK_MIN];
- #if defined(ARCH_CPU_X86_FAMILY) || defined(ARCH_CPU_ARM_FAMILY) || \
--    defined(ARCH_CPU_MIPS_FAMILY) || defined(ARCH_CPU_PPC64_FAMILY)
-+    defined(ARCH_CPU_MIPS_FAMILY) || defined(ARCH_CPU_PPC64_FAMILY) || \
-+    defined(ARCH_CPU_RISCV_FAMILY)
-   // The stack grows downward.
-   void* stack = stack_buf + sizeof(stack_buf);
- #else
---- a/sandbox/linux/services/syscall_wrappers.cc
-+++ b/sandbox/linux/services/syscall_wrappers.cc
-@@ -61,7 +61,8 @@
- #if defined(ARCH_CPU_X86_64)
-   return syscall(__NR_clone, flags, child_stack, ptid, ctid, tls);
- #elif defined(ARCH_CPU_X86) || defined(ARCH_CPU_ARM_FAMILY) || \
--    defined(ARCH_CPU_MIPS_FAMILY) || defined(ARCH_CPU_PPC64_FAMILY)
-+    defined(ARCH_CPU_MIPS_FAMILY) || defined(ARCH_CPU_PPC64_FAMILY) || \
-+    defined(ARCH_CPU_RISCV_FAMILY)
-   // CONFIG_CLONE_BACKWARDS defined.
-   return syscall(__NR_clone, flags, child_stack, ptid, tls, ctid);
- #endif
---- a/sandbox/linux/system_headers/linux_signal.h
-+++ b/sandbox/linux/system_headers/linux_signal.h
-@@ -13,7 +13,7 @@
- // (not undefined, but defined different values and in different memory
- // layouts). So, fill the gap here.
- #if defined(__i386__) || defined(__x86_64__) || defined(__arm__) || \
--    defined(__aarch64__) || defined(__powerpc64__)
-+    defined(__aarch64__) || defined(__powerpc64__) || defined(__riscv)
- 
- #define LINUX_SIGHUP 1
- #define LINUX_SIGINT 2
---- a/sandbox/linux/bpf_dsl/seccomp_macros.h
-+++ b/sandbox/linux/bpf_dsl/seccomp_macros.h
-@@ -391,6 +391,49 @@
- #define SECCOMP_PT_PARM5(_regs) (_regs).gpr[7]
- #define SECCOMP_PT_PARM6(_regs) (_regs).gpr[8]
- 
-+
-+#elif defined(__riscv)
-+struct regs_struct {
-+  unsigned long regs[32];
-+};
-+
-+#define SECCOMP_ARCH AUDIT_ARCH_RISCV64
-+
-+#define SECCOMP_REG(_ctx, _reg) ((_ctx)->uc_mcontext.__gregs[_reg])
-+
-+#define SECCOMP_RESULT(_ctx) SECCOMP_REG(_ctx, REG_A0)
-+#define SECCOMP_SYSCALL(_ctx) SECCOMP_REG(_ctx, REG_A0+7)
-+#define SECCOMP_IP(_ctx) (_ctx)->uc_mcontext.__gregs[REG_PC]
-+#define SECCOMP_PARM1(_ctx) SECCOMP_REG(_ctx, REG_A0)
-+#define SECCOMP_PARM2(_ctx) SECCOMP_REG(_ctx, REG_A0+1)
-+#define SECCOMP_PARM3(_ctx) SECCOMP_REG(_ctx, REG_A0+2)
-+#define SECCOMP_PARM4(_ctx) SECCOMP_REG(_ctx, REG_A0+3)
-+#define SECCOMP_PARM5(_ctx) SECCOMP_REG(_ctx, REG_A0+4)
-+#define SECCOMP_PARM6(_ctx) SECCOMP_REG(_ctx, REG_A0+5)
-+#define SECCOMP_PARM7(_ctx) SECCOMP_REG(_ctx, REG_A0+6)
-+
-+#define SECCOMP_NR_IDX (offsetof(struct arch_seccomp_data, nr))
-+#define SECCOMP_ARCH_IDX (offsetof(struct arch_seccomp_data, arch))
-+#define SECCOMP_IP_MSB_IDX \
-+  (offsetof(struct arch_seccomp_data, instruction_pointer) + 4)
-+#define SECCOMP_IP_LSB_IDX \
-+  (offsetof(struct arch_seccomp_data, instruction_pointer) + 0)
-+#define SECCOMP_ARG_MSB_IDX(nr) \
-+  (offsetof(struct arch_seccomp_data, args) + 8 * (nr) + 4)
-+#define SECCOMP_ARG_LSB_IDX(nr) \
-+  (offsetof(struct arch_seccomp_data, args) + 8 * (nr) + 0)
-+
-+#define SECCOMP_PT_RESULT(_regs) (_regs).regs[REG_A0]
-+#define SECCOMP_PT_SYSCALL(_regs) (_regs).regs[REG_A0+7]
-+#define SECCOMP_PT_IP(_regs) (_regs).regs[REG_PC]
-+#define SECCOMP_PT_PARM1(_regs) (_regs).regs[REG_A0]
-+#define SECCOMP_PT_PARM2(_regs) (_regs).regs[REG_A0+1]
-+#define SECCOMP_PT_PARM3(_regs) (_regs).regs[REG_A0+2]
-+#define SECCOMP_PT_PARM4(_regs) (_regs).regs[REG_A0+3]
-+#define SECCOMP_PT_PARM5(_regs) (_regs).regs[REG_A0+4]
-+#define SECCOMP_PT_PARM6(_regs) (_regs).regs[REG_A0+5]
-+#define SECCOMP_PT_PARM7(_regs) (_regs).regs[REG_A0+6]
-+
- #else
- #error Unsupported target platform
- 
---- a/sandbox/features.gni
-+++ b/sandbox/features.gni
-@@ -10,7 +10,7 @@
-                   (current_cpu == "x86" || current_cpu == "x64" ||
-                    current_cpu == "arm" || current_cpu == "arm64" ||
-                    current_cpu == "mipsel" || current_cpu == "mips64el" ||
--                   current_cpu == "ppc64")
-+                   current_cpu == "ppc64" || current_cpu == "riscv64")
- 
- # SSBD (Speculative Store Bypass Disable) is a mitigation of Spectre Variant 4.
- # As Spectre Variant 4 can be mitigated by site isolation, opt-out SSBD on site
---- a/sandbox/linux/integration_tests/bpf_dsl_seccomp_unittest.cc
-+++ b/sandbox/linux/integration_tests/bpf_dsl_seccomp_unittest.cc
-@@ -17,6 +17,7 @@
- #include <sys/types.h>
- #include <sys/utsname.h>
- #include <unistd.h>
-+#include <linux/elf.h>
- 
- #include <memory>
- #include <vector>
-@@ -2029,7 +2030,15 @@
-     BPF_ASSERT_EQ(kTraceData, data);
- 
-     regs_struct regs;
-+#if defined(__riscv)
-+    iovec iov;
-+    iov.iov_base = &regs;
-+    iov.iov_len = sizeof(regs);
-+    BPF_ASSERT_NE(-1, ptrace(PTRACE_GETREGSET, pid,
-+                             reinterpret_case<void*>(NT_PRSTATUS), &iov));
-+#else
-     BPF_ASSERT_NE(-1, ptrace(PTRACE_GETREGS, pid, NULL, &regs));
-+#endif
-     switch (SECCOMP_PT_SYSCALL(regs)) {
-       case __NR_write:
-         // Skip writes to stdout, make it return kExpectedReturnValue.  Allow
-@@ -2037,7 +2046,14 @@
-         if (SECCOMP_PT_PARM1(regs) == STDOUT_FILENO) {
-           BPF_ASSERT_NE(-1, SetSyscall(pid, &regs, -1));
-           SECCOMP_PT_RESULT(regs) = kExpectedReturnValue;
-+#if defined(__riscv)
-+	  iov.iov_len = sizeof(regs);
-+	  BPF_ASSERT_NE(-1, ptrace(PTRACE_SETREGSET, pid,
-+				   reinterpret_cast<void*>(NT_PRSTATUS),
-+                                   &iov));
-+#else
-           BPF_ASSERT_NE(-1, ptrace(PTRACE_SETREGS, pid, NULL, &regs));
-+#endif
-         }
-         break;
- 
-@@ -2045,7 +2061,13 @@
-         // Rewrite to exit(kExpectedReturnValue).
-         BPF_ASSERT_NE(-1, SetSyscall(pid, &regs, __NR_exit));
-         SECCOMP_PT_PARM1(regs) = kExpectedReturnValue;
-+#if defined(__riscv)
-+        iov.iov_len = sizeof(regs);
-+	BPF_ASSERT_NE(-1, ptrace(PTRACE_SETREGSET, pid,
-+                                 reinterpret_cast<void*>(NT_PRSTATUS), &iov));
-+#else
-         BPF_ASSERT_NE(-1, ptrace(PTRACE_SETREGS, pid, NULL, &regs));
-+#endif
-         break;
- 
-       default:
---- a/sandbox/linux/seccomp-bpf-helpers/baseline_policy_unittest.cc
-+++ b/sandbox/linux/seccomp-bpf-helpers/baseline_policy_unittest.cc
-@@ -256,7 +256,7 @@
- }
- 
- // Not all architectures can restrict the domain for socketpair().
--#if defined(__x86_64__) || defined(__arm__) || defined(__aarch64__)
-+#if defined(__x86_64__) || defined(__arm__) || defined(__aarch64__) || defined(__riscv)
- BPF_DEATH_TEST_C(BaselinePolicy,
-                  SocketpairWrongDomain,
-                  DEATH_SEGV_MESSAGE(GetErrorMessageContentForTests()),
-@@ -265,7 +265,7 @@
-   std::ignore = socketpair(AF_INET, SOCK_STREAM, 0, sv);
-   _exit(1);
- }
--#endif  // defined(__x86_64__) || defined(__arm__) || defined(__aarch64__)
-+#endif  // defined(__x86_64__) || defined(__arm__) || defined(__aarch64__) || defined(__riscv64)
- 
- BPF_TEST_C(BaselinePolicy, EPERM_open, BaselinePolicy) {
-   errno = 0;
---- a/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions_unittests.cc
-+++ b/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions_unittests.cc
-@@ -7,6 +7,7 @@
- #include <errno.h>
- #include <fcntl.h>
- #include <linux/elf.h>
-+#include <asm/ptrace.h>
- #include <sched.h>
- #include <sys/prctl.h>
- #include <sys/ptrace.h>
---- a/sandbox/linux/seccomp-bpf/trap.cc
-+++ b/sandbox/linux/seccomp-bpf/trap.cc
-@@ -217,6 +217,18 @@
-                        SECCOMP_PARM6(ctx),
-                        SECCOMP_PARM7(ctx),
-                        SECCOMP_PARM8(ctx));
-+#elif defined(__riscv)
-+    // RISC-V supports up to seven arguments for syscall.
-+    // However, seccomp bpf can filter only up to six arguments, so using seven
-+    // arguments has sense only when using UnsafeTrap() handler.
-+    rc = Syscall::Call(SECCOMP_SYSCALL(ctx),
-+                       SECCOMP_PARM1(ctx),
-+                       SECCOMP_PARM2(ctx),
-+                       SECCOMP_PARM3(ctx),
-+                       SECCOMP_PARM4(ctx),
-+                       SECCOMP_PARM5(ctx),
-+                       SECCOMP_PARM6(ctx),
-+                       SECCOMP_PARM7(ctx));
- #else
-     rc = Syscall::Call(SECCOMP_SYSCALL(ctx),
-                        SECCOMP_PARM1(ctx),
---- a/sandbox/policy/linux/bpf_cdm_policy_linux.cc
-+++ b/sandbox/policy/linux/bpf_cdm_policy_linux.cc
-@@ -33,7 +33,7 @@
-     case __NR_ftruncate:
-     case __NR_fallocate:
- #if defined(__i386__) || defined(__x86_64__) || defined(__mips__) || \
--    defined(__aarch64__)
-+    defined(__aarch64__) || defined(__riscv)
-     case __NR_getrlimit:
- #endif
- #if defined(__i386__) || defined(__arm__)
 --- a/sandbox/policy/linux/bpf_print_compositor_policy_linux.cc
 +++ b/sandbox/policy/linux/bpf_print_compositor_policy_linux.cc
 @@ -33,7 +33,7 @@
@@ -2073,7 +2079,7 @@ This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
      case __NR_fsync:
  #if defined(__i386__) || defined(__x86_64__) || defined(__mips__) || \
 -    defined(__aarch64__)
-+    defined(__aarch64__) || defined(__riscv)
++    defined(__aarch64__) || defined (__riscv)
      case __NR_getrlimit:
  #endif
  #if defined(__i386__) || defined(__arm__)

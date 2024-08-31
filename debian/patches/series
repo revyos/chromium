@@ -132,9 +132,11 @@ ppc64le/fixes/fix-unknown-warning-option-messages.diff
 # They will not work on POWER8 (ISA 2.07) or below
 #ppc64le/core/baseline-isa-3-0.patch
 
+riscv64/v8-bump-to-2b368def.patch
+riscv64/v8-REVERT-deprecation-removals.patch
 riscv64/dav1d.patch
 riscv64/ffmpeg.patch
-riscv64/fix-rustc-build.patch
-riscv64/fix-rust-ld.patch
 riscv64/sandbox.patch
+riscv64/fix-rust-linking.patch
+riscv64/extensions.patch
 riscv64/HACK-devtools-remove-terser.patch
