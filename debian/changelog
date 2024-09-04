@@ -1,3 +1,13 @@
+chromium (131.0.6778.108-2) UNRELEASED; urgency=high
+
+  [ Daniel Richard G. ]
+  * d/rules: Various updates to get-orig-source rule, including use of
+    grep-dctrl(1) and the LASTCHANGE.committime timestamp.
+  * d/scripts/check-upstream: Avoid issues with inaccurate $(pwd) value and
+    spaces in filenames, and print all errors instead of only the first one.
+
+ -- Andres Salomon <dilinger@debian.org>  Wed, 04 Dec 2024 01:55:51 -0500
+
 chromium (131.0.6778.108-1) unstable; urgency=high
 
   * New upstream security release.
