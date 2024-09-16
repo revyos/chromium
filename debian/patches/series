@@ -45,17 +45,7 @@ system/eu-strip.patch
 system/rapidjson.patch
 system/rollup.patch
 
-bookworm/clang16.patch
 bookworm/libxml-parseerr.patch
-bookworm/urlhelper-ctor.patch
-bookworm/v8-wrappable.patch
-bookworm/lex-3way.patch
-bookworm/traitors.patch
-bookworm/spaceship-operator.patch
-bookworm/more-spaceships.patch
-bookworm/signer-lambda.patch
-bookworm/constexpr.patch
-bookworm/blink-attrib.patch
 
 # Ungoogled Chromium
 ungoogled/disable-privacy-sandbox.patch

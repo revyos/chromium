@@ -1,3 +1,9 @@
+chromium (129.0.6668.100-2) unstable; urgency=high
+
+  * Switch to using clang-19 (closes: #1081241).
+
+ -- Andres Salomon <dilinger@debian.org>  Wed, 09 Oct 2024 14:13:00 -0400
+
 chromium (129.0.6668.100-1) unstable; urgency=high
 
   * New upstream security release.
