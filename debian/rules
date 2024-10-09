@@ -95,8 +95,6 @@ defines+=is_debug=false \
          safe_browsing_use_unrar=false \
          enable_vr=false \
          enable_nacl=false \
-         enable_swiftshader=false \
-         dawn_use_swiftshader=false \
          build_dawn_tests=false \
          enable_reading_list=false \
          enable_iterator_debugging=false \
@@ -123,6 +121,7 @@ defines+=use_gio=true \
          use_system_lcms2=true \
          use_system_libjpeg=true \
          use_system_libpng=true \
+         use_system_libtiff=true \
          use_system_freetype=true \
          use_system_harfbuzz=true \
          use_system_libopenjpeg2=true \
@@ -233,6 +232,7 @@ get-orig-source:
 	@echo
 	rm -f $(debvers).excludes
 	cd $(extract) && ../debian/scripts/check-upstream
+	chmod -R u+w $(extract)
 	@echo $$(($$(date +%s) - $$(cat $(seconds)))) seconds
 	@echo
 	test ! -e $(origtxz) || rm -f $(origtxz)
