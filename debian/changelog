@@ -1,3 +1,10 @@
+chromium (129.0.6668.100-1revyos1) UNRELEASED; urgency=medium
+
+  * Non-maintainer upload.
+  * Bump riscv64 patch to Chromium 129
+
+ -- Eric Long <i@hack3r.moe>  Wed, 09 Oct 2024 22:01:03 +0800
+
 chromium (129.0.6668.100-1) unstable; urgency=high
 
   * New upstream security release.
