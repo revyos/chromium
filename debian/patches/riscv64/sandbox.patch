@@ -647,9 +647,9 @@ Change-Id: Ibcdaaba1b0c92a1cd85361b9859370c686832c49
                         SECCOMP_PARM1(ctx),
 --- a/sandbox/linux/services/credentials.cc
 +++ b/sandbox/linux/services/credentials.cc
-@@ -85,7 +85,7 @@
-   pid_t pid = -1;
+@@ -91,7 +91,7 @@
    alignas(16) char stack_buf[PTHREAD_STACK_MIN];
+ 
  #if defined(ARCH_CPU_X86_FAMILY) || defined(ARCH_CPU_ARM_FAMILY) || \
 -    defined(ARCH_CPU_MIPS_FAMILY) || defined(ARCH_CPU_PPC64_FAMILY)
 +    defined(ARCH_CPU_MIPS_FAMILY) || defined(ARCH_CPU_PPC64_FAMILY) || defined(ARCH_CPU_RISCV_FAMILY)
