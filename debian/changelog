@@ -1,6 +1,7 @@
 chromium (129.0.6668.100-2) unstable; urgency=high
 
-  * Switch to using clang-19 (closes: #1081241).
+  * Switch to using clang-19, and drop all d/patches/bookworm/ workarounds
+    except for libxml-parsererr.patch (closes: #1081241).
 
  -- Andres Salomon <dilinger@debian.org>  Wed, 09 Oct 2024 14:13:00 -0400
 
