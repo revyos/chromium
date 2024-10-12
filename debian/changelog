@@ -1,3 +1,11 @@
+chromium (129.0.6668.100-3) UNRELEASED; urgency=high
+
+  [ Daniel Richard G. ]
+  * d/rules: Drop the clang-16 -I/-Wl,-rpath flags from CXXFLAGS/LDFLAGS as
+    they are no longer needed.
+
+ -- Andres Salomon <dilinger@debian.org>  Wed, 09 Oct 2024 14:13:00 -0400
+
 chromium (129.0.6668.100-2) unstable; urgency=high
 
   * Switch to using clang-19, and drop all d/patches/bookworm/ workarounds
