@@ -1,4 +1,16 @@
-chromium (129.0.6668.100-3) UNRELEASED; urgency=high
+chromium (130.0.6723.44-1) UNRELEASED; urgency=high
+
+  [ Andres Salomon ]
+  * New upstream stable release.
+  * d/patches:
+    - debianization/sandbox.patch: refresh.
+    - fixes/bindgen.patch: refresh.
+    - disable/catapult.patch: refresh.
+    - system/zlib.patch: drop. Upstream removed courgette, and its
+      replacement (zucchini) doesn't appear to use zlib.
+    - system/event.patch: drop half of patch due to upstream deletions.
+    - upstream/mojo-null.patch: merged into mojo.patch.
+    - upstream/mojo.patch: update based on 130 test files.
 
   [ Daniel Richard G. ]
   * d/rules: Drop the clang-16 -I/-Wl,-rpath flags from CXXFLAGS/LDFLAGS as
