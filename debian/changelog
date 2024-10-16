@@ -1,7 +1,31 @@
-chromium (130.0.6723.44-1) UNRELEASED; urgency=high
+chromium (130.0.6723.58-1) UNRELEASED; urgency=high
 
   [ Andres Salomon ]
   * New upstream stable release.
+    - CVE-2024-9954: Use after free in AI. Reported by DarkNavy.
+    - CVE-2024-9955: Use after free in Web Authentication.
+      Reported by anonymous.
+    - CVE-2024-9956: Inappropriate implementation in Web Authentication.
+      Reported by mastersplinter.
+    - CVE-2024-9957: Use after free in UI. Reported by lime(@limeSec_) and
+      fmyy(@binary_fmyy) From TIANGONG Team of Legendsec at QI-ANXIN Group.
+    - CVE-2024-9958: Inappropriate implementation in PictureInPicture.
+      Reported by Lyra Rebane (rebane2001).
+    - CVE-2024-9959: Use after free in DevTools. Reported by Sakana.S.
+    - CVE-2024-9960: Use after free in Dawn. Reported by Anonymous.
+    - CVE-2024-9961: Use after free in Parcel Tracking. Reported by
+      lime(@limeSec_) and fmyy(@binary_fmyy) From TIANGONG Team of
+      Legendsec at QI-ANXIN Group.
+    - CVE-2024-9962: Inappropriate implementation in Permissions.
+      Reported by Shaheen Fazim.
+    - CVE-2024-9963: Insufficient data validation in Downloads.
+      Reported by Anonymous.
+    - CVE-2024-9964: Inappropriate implementation in Payments.
+      Reported by Hafiizh.
+    - CVE-2024-9965: Insufficient data validation in DevTools.
+      Reported by Shaheen Fazim.
+    - CVE-2024-9966: Inappropriate implementation in Navigations.
+      Reported by Harry Chen.
   * d/copyright: rollup -> @rollup  deletion.
   * d/patches:
     - debianization/sandbox.patch: refresh.
