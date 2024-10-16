@@ -149,4 +149,5 @@ riscv64/extensions.patch
 riscv64/cargo_crate-riscv-pointer-width.patch
 riscv64/compiler-rt.patch
 riscv64/swiftshader.patch
+riscv64/fix-study-crash.patch
 riscv64/HACK-devtools-remove-terser.patch
