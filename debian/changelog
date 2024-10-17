@@ -43,6 +43,19 @@ chromium (130.0.6723.58-1) UNRELEASED; urgency=high
   * d/rules: Drop the clang-16 -I/-Wl,-rpath flags from CXXFLAGS/LDFLAGS as
     they are no longer needed.
 
+  [ Timothy Pearson ]
+  * d/patches/ppc64le:
+    - core/cargo-add-ppc64.diff
+    - third_party/0001-Add-PPC64-support-for-boringssl.patch: Refresh for
+      upstream changes
+    - third_party/0001-Force-baseline-POWER8-AltiVec-VSX-CPU-features-when-
+      .patch: Refresh for upstream changes
+    - third_party/0002-third_party-libvpx-Remove-bad-ppc64-config.patch:
+      Refresh for upstream changes
+    - third_party/skia-vsx-instructions.patch: Refresh for upstream changes
+    - workarounds/HACK-debian-clang-disable-skia-musttail.patch: Refresh
+      for upstream changes
+
  -- Andres Salomon <dilinger@debian.org>  Wed, 09 Oct 2024 14:13:00 -0400
 
 chromium (129.0.6668.100-2) unstable; urgency=high
