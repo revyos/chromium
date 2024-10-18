@@ -48,6 +48,8 @@ chromium (130.0.6723.58-1) UNRELEASED; urgency=high
     - upstream/blink-fix-size-assertions.patch: Fix build on non-amd64
       platforms
   * d/patches/ppc64le:
+    - core/add-ppc64-pthread-stack-size.patch: Define correct pthread
+      stack size on ppc64 systems
     - core/cargo-add-ppc64.diff
     - third_party/0001-Add-PPC64-support-for-boringssl.patch: Refresh for
       upstream changes
