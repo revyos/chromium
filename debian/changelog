@@ -1,4 +1,4 @@
-chromium (130.0.6723.58-1) UNRELEASED; urgency=high
+chromium (130.0.6723.58-1) unstable; urgency=high
 
   [ Andres Salomon ]
   * New upstream stable release.
@@ -63,7 +63,7 @@ chromium (130.0.6723.58-1) UNRELEASED; urgency=high
     - workarounds/HACK-debian-clang-disable-skia-musttail.patch: Refresh
       for upstream changes
 
- -- Andres Salomon <dilinger@debian.org>  Wed, 09 Oct 2024 14:13:00 -0400
+ -- Andres Salomon <dilinger@debian.org>  Sat, 19 Oct 2024 01:12:11 -0400
 
 chromium (129.0.6668.100-2) unstable; urgency=high
 
