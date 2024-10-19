@@ -16,6 +16,7 @@ fixes/clang-rust-target.patch
 fixes/highway-include-path.patch
 fixes/gpu-crash.patch
 fixes/predictor-denial-of-service.patch
+fixes/fix-assert-in-vnc-sessions.patch
 
 upstream/mojo.patch
 upstream/ruy-include.patch
