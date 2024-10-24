@@ -1,6 +1,7 @@
 chromium (131.0.6778.108-2) UNRELEASED; urgency=high
 
   [ Daniel Richard G. ]
+  * d/copyright: Expand list of Files-Excluded: entries.
   * d/rules: Various updates to get-orig-source rule, including use of
     grep-dctrl(1) and the LASTCHANGE.committime timestamp.
   * d/scripts/check-upstream: Avoid issues with inaccurate $(pwd) value and
