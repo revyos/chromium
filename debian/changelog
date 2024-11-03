@@ -1,3 +1,9 @@
+chromium (130.0.6723.91-2) unstable; urgency=high
+
+  * d/patches/fixes/armhf-timespec.patch: add patch to fix armhf FTBFS.
+
+ -- Andres Salomon <dilinger@debian.org>  Sun, 03 Nov 2024 02:47:53 -0500
+
 chromium (130.0.6723.91-1) unstable; urgency=high
 
   * New upstream security release.
