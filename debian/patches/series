@@ -18,10 +18,11 @@ fixes/gpu-crash.patch
 fixes/predictor-denial-of-service.patch
 fixes/fix-assert-in-vnc-sessions.patch
 fixes/armhf-timespec.patch
+fixes/freetype.patch
+fixes/updater-test.patch
 
 upstream/mojo.patch
 upstream/ruy-include.patch
-upstream/wayland-gbm-pixmap.patch
 upstream/blink-fix-size-assertions.patch
 
 disable/tests.patch
