@@ -28,6 +28,15 @@ chromium (131.0.6778.85-1) UNRELEASED; urgency=high
     - fixes/updater-test.patch: add simple build fix for deleted
       third_party/updater/.
 
+  [ Timothy Pearson ]
+  * d/patches/ppc64le:
+    - workarounds/HACK-debian-clang-disable-pa-musttail.patch: Work around
+      additional upstream musttail definitions
+    - workarounds/HACK-debian-clang-disable-base-musttail.patch: Refresh for
+      upstream changes
+    - third_party/0002-third_party-libvpx-Remove-bad-ppc64-config.patch:
+      Refresh for upstream changes
+
  -- Andres Salomon <dilinger@debian.org>  Wed, 06 Nov 2024 02:30:57 -0500
 
 chromium (130.0.6723.116-1) unstable; urgency=high
