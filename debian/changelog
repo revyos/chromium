@@ -1,5 +1,6 @@
-chromium (131.0.6778.85-1) UNRELEASED; urgency=high
+chromium (131.0.6778.85-1) unstable; urgency=high
 
+  [ Andres Salomon ]
   * New upstream stable release.
     - CVE-2024-11110: Inappropriate implementation in Blink.
       Reported by Vsevolod Kokorin (Slonser) of Solidlab.
@@ -37,7 +38,7 @@ chromium (131.0.6778.85-1) UNRELEASED; urgency=high
     - third_party/0002-third_party-libvpx-Remove-bad-ppc64-config.patch:
       Refresh for upstream changes
 
- -- Andres Salomon <dilinger@debian.org>  Wed, 06 Nov 2024 02:30:57 -0500
+ -- Andres Salomon <dilinger@debian.org>  Thu, 21 Nov 2024 16:12:03 -0500
 
 chromium (130.0.6723.116-1) unstable; urgency=high
 
