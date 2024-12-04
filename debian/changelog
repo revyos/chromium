@@ -1,3 +1,11 @@
+chromium (131.0.6778.108-1) unstable; urgency=high
+
+  * New upstream security release.
+    - CVE-2024-12053: Type Confusion in V8.
+      Reported by gal1ium and chluo.
+
+ -- Andres Salomon <dilinger@debian.org>  Wed, 04 Dec 2024 01:55:50 -0500
+
 chromium (131.0.6778.85-1) unstable; urgency=high
 
   [ Andres Salomon ]
