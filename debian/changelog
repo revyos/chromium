@@ -1,5 +1,8 @@
 chromium (131.0.6778.108-2) UNRELEASED; urgency=high
 
+  [ Nathan Teodosio ]
+  * Simplify fixes/bindgen.patch so it doesn't need frequent rebasing.
+
   [ Daniel Richard G. ]
   * d/copyright: Expand list of Files-Excluded: entries.
   * d/rules: Various updates to get-orig-source rule, including use of
