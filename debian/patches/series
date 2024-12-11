@@ -21,6 +21,7 @@ fixes/armhf-timespec.patch
 fixes/freetype.patch
 fixes/updater-test.patch
 fixes/absl-optional.patch
+fixes/font-gc-asan.patch
 
 upstream/mojo.patch
 upstream/ruy-include.patch
