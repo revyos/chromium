@@ -10,6 +10,12 @@ chromium (131.0.6778.139-1) UNRELEASED; urgency=high
     simplify the prior clang-16/19 upgrades.
   * d/patches:
     - fixes/bindgen.patch: refresh.
+    - upstream/dawn-strlen.patch: add gcc-specific build fix.
+    - upstream/ink-isfinite.patch: add gcc-specific build fix.
+    - upstream/webrtc-optional.patch: add gcc-specific build fix.
+    - upstream/variant.patch: add gcc-specific build fixes.
+    - upstream/array.patch: add gcc-specific build fix.
+    - fixes/absl-optional.patch: re-introduce clang/gcc build workaround.
 
   [ Nathan Teodosio ]
   * Simplify fixes/bindgen.patch so it doesn't need frequent rebasing.
