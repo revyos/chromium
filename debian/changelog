@@ -16,6 +16,7 @@ chromium (131.0.6778.139-1) UNRELEASED; urgency=high
     - upstream/variant.patch: add gcc-specific build fixes.
     - upstream/array.patch: add gcc-specific build fix.
     - fixes/absl-optional.patch: re-introduce clang/gcc build workaround.
+    - upstream/mrc-copy-op.patch: add gcc-specific build fix.
 
   [ Nathan Teodosio ]
   * Simplify fixes/bindgen.patch so it doesn't need frequent rebasing.
