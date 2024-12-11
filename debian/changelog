@@ -6,6 +6,8 @@ chromium (131.0.6778.139-1) UNRELEASED; urgency=high
       Reported by Seunghyun Lee (@0x10n).
     - CVE-2024-12382: Use after free in Translate. Reported by
       lime(@limeSec_) from TIANGONG Team of Legendsec at QI-ANXIN Group.
+  * (Temporarily) switch from llvm's libc++ to gcc's libstdc++ to
+    simplify the prior clang-16/19 upgrades.
 
   [ Nathan Teodosio ]
   * Simplify fixes/bindgen.patch so it doesn't need frequent rebasing.
