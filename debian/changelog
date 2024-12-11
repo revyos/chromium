@@ -1,4 +1,4 @@
-chromium (131.0.6778.139-1) UNRELEASED; urgency=high
+chromium (131.0.6778.139-1) unstable; urgency=high
 
   [ Andres Salomon ]
   * New upstream security release.
@@ -6,7 +6,7 @@ chromium (131.0.6778.139-1) UNRELEASED; urgency=high
       Reported by Seunghyun Lee (@0x10n).
     - CVE-2024-12382: Use after free in Translate. Reported by
       lime(@limeSec_) from TIANGONG Team of Legendsec at QI-ANXIN Group.
-  * (Temporarily) switch from llvm's libc++ to gcc's libstdc++ to
+  * (Temporarily?) switch from llvm's libc++ to gcc's libstdc++ to
     simplify the prior clang-16/19 upgrades.
   * d/patches:
     - fixes/bindgen.patch: refresh.
@@ -31,7 +31,7 @@ chromium (131.0.6778.139-1) UNRELEASED; urgency=high
   * d/scripts/check-upstream: Avoid issues with inaccurate $(pwd) value and
     spaces in filenames, and print all errors instead of only the first one.
 
- -- Andres Salomon <dilinger@debian.org>  Wed, 04 Dec 2024 01:55:51 -0500
+ -- Andres Salomon <dilinger@debian.org>  Wed, 11 Dec 2024 15:33:53 -0500
 
 chromium (131.0.6778.108-1) unstable; urgency=high
 
