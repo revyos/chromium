@@ -1,3 +1,13 @@
+chromium (131.0.6778.139-2) UNRELEASED; urgency=high
+
+  [ Daniel Richard G. ]
+  * d/patches: Refresh existing patches not used in Debian unstable for the
+    benefit of the Ubuntu jammy build:
+    - bookworm/constexpr.patch: Refresh (sync from bookworm branch)
+    - bullseye/av1-vaapi.patch: Refresh
+
+ -- Andres Salomon <dilinger@debian.org>  Wed, 11 Dec 2024 15:33:54 -0500
+
 chromium (131.0.6778.139-1) unstable; urgency=high
 
   [ Andres Salomon ]
