@@ -1,3 +1,11 @@
+chromium (131.0.6778.204-2) UNRELEASED; urgency=high
+
+  [ Bo YU ]
+  * Enable 0001-swiftshader-fix-build.patch on ppc64el again to fix
+    FTBFS issue.
+
+ -- Bo YU <tsu.yubo@gmail.com>  Thu, 19 Dec 2024 23:58:13 -0600
+
 chromium (131.0.6778.204-1) unstable; urgency=high
 
   [ Andres Salomon ]
