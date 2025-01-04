@@ -54,6 +54,23 @@ system/rollup.patch
 
 bookworm/libxml-parseerr.patch
 
+# unused patches:
+# bookworm/blink-attrib.patch
+# bookworm/clang16.patch
+# bookworm/constexpr.patch
+# bookworm/lex-3way.patch
+# bookworm/more-spaceships.patch
+# bookworm/signer-lambda.patch
+# bookworm/spaceship-operator.patch
+# bookworm/traitors.patch
+# bookworm/urlhelper-ctor.patch
+# bookworm/v8-wrappable.patch
+# bullseye/av1-vaapi.patch
+# bullseye/constexpr.patch
+# bullseye/openh264.patch
+# bullseye/webui.patch
+
+
 # Ungoogled Chromium
 ungoogled/disable-privacy-sandbox.patch
 
