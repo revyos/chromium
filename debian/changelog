@@ -12,6 +12,7 @@ chromium (132.0.6834.83-1) UNRELEASED; urgency=high
     - fixes/bindgen.patch: refresh and make patch even smaller.
     - fixes/fix-assert-in-vnc-sessions.patch: refresh.
     - ungoogled/disable-privacy-sandbox.patch: refresh.
+    - upstream/mojo.patch: add some missing files.
 
  -- Andres Salomon <dilinger@debian.org>  Wed, 08 Jan 2025 11:26:36 -0500
 
