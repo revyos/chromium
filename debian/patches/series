@@ -15,11 +15,9 @@ fixes/bindgen.patch
 fixes/memory-allocator-dcheck-assert-fix.patch
 fixes/clang-rust-target.patch
 fixes/highway-include-path.patch
-fixes/gpu-crash.patch
 fixes/predictor-denial-of-service.patch
 fixes/fix-assert-in-vnc-sessions.patch
 fixes/armhf-timespec.patch
-fixes/freetype.patch
 fixes/updater-test.patch
 fixes/absl-optional.patch
 fixes/font-gc-asan.patch
