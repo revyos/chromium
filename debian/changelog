@@ -1,3 +1,15 @@
+chromium (132.0.6834.83-1) UNRELEASED; urgency=high
+
+  * New upstream stable release.
+  * d/patches:
+    - upstream/blink-fix-size-assertions.patch: drop, merged upstream.
+    - upstream/dawn-strlen.patch: drop, merged upstream.
+    - upstream/mrc-copy-op.patch: drop, merged upstream.
+    - upstream/variant.patch: part of this was merged upstream; keep the
+      rest.
+
+ -- Andres Salomon <dilinger@debian.org>  Wed, 08 Jan 2025 11:26:36 -0500
+
 chromium (131.0.6778.264-1) unstable; urgency=high
 
   [ Andres Salomon ]

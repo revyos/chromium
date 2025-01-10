@@ -26,13 +26,10 @@ fixes/font-gc-asan.patch
 
 upstream/mojo.patch
 upstream/ruy-include.patch
-upstream/blink-fix-size-assertions.patch
-upstream/dawn-strlen.patch
 upstream/ink-isfinite.patch
 upstream/webrtc-optional.patch
 upstream/variant.patch
 upstream/array.patch
-upstream/mrc-copy-op.patch
 
 disable/tests.patch
 disable/tests-swiftshader.patch
