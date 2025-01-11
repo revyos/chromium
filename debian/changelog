@@ -9,7 +9,8 @@ chromium (132.0.6834.83-1) UNRELEASED; urgency=high
       rest.
     - fixes/freetype.patch: drop, merged upstream.
     - fixes/gpu-crash.patch: drop, merged upstream.
-    - fixes/bindgen.patch: refresh and make patch even smaller.
+    - fixes/bindgen.patch: refresh and make patch even smaller. Also some
+      upstream churn.
     - fixes/fix-assert-in-vnc-sessions.patch: refresh.
     - ungoogled/disable-privacy-sandbox.patch: refresh.
     - upstream/mojo.patch: add some missing files.
