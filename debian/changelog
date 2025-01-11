@@ -16,7 +16,8 @@ chromium (132.0.6834.83-1) UNRELEASED; urgency=high
     - upstream/mojo.patch: add some missing files.
   * Downgrade to rollup3 for devtools-frontend stuff, due to the bundled
     rollup4 including wasm blobs. Update d/patches/system/rollup.patch to
-    point to the right place as well.
+    point to the right place as well, and build-dep on
+    node-rollup-plugin-terser.
 
  -- Andres Salomon <dilinger@debian.org>  Wed, 08 Jan 2025 11:26:36 -0500
 
