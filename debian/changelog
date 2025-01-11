@@ -19,6 +19,12 @@ chromium (132.0.6834.83-1) UNRELEASED; urgency=high
     point to the right place as well, and build-dep on
     node-rollup-plugin-terser.
 
+  [ Timothy Pearson ]
+  * d/patches/ppc64le:
+    - workarounds/HACK-debian-clang-disable-skia-musttail.patch: Drop due
+      to upstream fixes
+    - third_party/skia-vsx-instructions.patch: Refresh for upstream changes
+
  -- Andres Salomon <dilinger@debian.org>  Wed, 08 Jan 2025 11:26:36 -0500
 
 chromium (131.0.6778.264-1) unstable; urgency=high
