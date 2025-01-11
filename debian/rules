@@ -160,6 +160,7 @@ override_dh_auto_configure: test_armhf_neon
 	cp /usr/bin/node third_party/node/linux/node-linux-x64/bin
 	# use system rollup
 	cp -ra /usr/share/nodejs/rollup third_party/node/node_modules/
+	- test -L third_party/devtools-frontend/src/node_modules/rollup3 || ln -s /usr/share/nodejs/rollup third_party/devtools-frontend/src/node_modules/rollup3
 	# output compiler information
 	$(CXX) --version
 	# prefer unbundled (system) libraries
@@ -196,6 +197,7 @@ override_dh_auto_clean:
 	rm -rf third_party/node/linux/node-linux-x64
 	rm -rf out
 	rm -rf third_party/node/node_modules/rollup
+	rm -f third_party/devtools-frontend/src/node_modules/rollup3
 	# bullseye workarounds; delete this post-bullseye
 	rm -rf third_party/node/node_modules/acorn
 	rm -rf third_party/node/node_modules/walk
