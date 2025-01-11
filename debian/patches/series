@@ -28,6 +28,7 @@ upstream/ink-isfinite.patch
 upstream/webrtc-optional.patch
 upstream/variant.patch
 upstream/array.patch
+upstream/uint.patch
 
 disable/tests.patch
 disable/tests-swiftshader.patch
