@@ -21,6 +21,7 @@ chromium (132.0.6834.83-1) UNRELEASED; urgency=high
     rollup4 including wasm blobs. Update d/patches/system/rollup.patch to
     point to the right place as well, and build-dep on
     node-rollup-plugin-terser.
+  * Build against newer bundled libtiff for memory limiting protection.
 
   [ Timothy Pearson ]
   * d/patches/ppc64le:
