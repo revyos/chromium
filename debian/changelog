@@ -22,6 +22,7 @@ chromium (132.0.6834.83-1) UNRELEASED; urgency=high
     point to the right place as well, and build-dep on
     node-rollup-plugin-terser.
   * Build against newer bundled libtiff for memory limiting protection.
+  * Switch to bundled libdrm due to DRM_IOCTL_SYNCOBJ_EVENTFD usage.
 
   [ Timothy Pearson ]
   * d/patches/ppc64le:
