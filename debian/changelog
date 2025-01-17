@@ -1,3 +1,13 @@
+chromium (132.0.6834.83-2) UNRELEASED; urgency=high
+
+  [ Ahmad Khalifa ]
+  * d/NEWS uses missing release, set it to nearest to silence lintian.
+  * d/control: replace obsolete pkg-config with pkgconf.
+  * d/upstream/metadata: switch fields to expected case.
+  * d/patches/series: help lintian ignore unused bullseye patches.
+
+ -- Andres Salomon <dilinger@debian.org>  Tue, 14 Jan 2025 21:20:43 -0500
+
 chromium (132.0.6834.83-1) unstable; urgency=high
 
   [ Andres Salomon ]
