@@ -14,6 +14,12 @@ chromium (132.0.6834.83-2) UNRELEASED; urgency=high
   * d/etc/dev-shm: Add --disable-dev-shm-usage if the system has less than
     ~4 GB available in /dev/shm to avoid crashes (closes: #1072299).
 
+  [ Jianfeng Liu ]
+  * d/patches:
+    - fixes/libsync-rk3588-panthor.patch: Fix upstream issue #343592370,
+      which can cause browser crash when running with ozone wayland on
+      rk3588 platform.
+
  -- Andres Salomon <dilinger@debian.org>  Tue, 14 Jan 2025 21:20:43 -0500
 
 chromium (132.0.6834.83-1) unstable; urgency=high
