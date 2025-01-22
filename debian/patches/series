@@ -22,6 +22,7 @@ fixes/updater-test.patch
 fixes/absl-optional.patch
 fixes/font-gc-asan.patch
 fixes/lens-optional.patch
+fixes/libsync-rk3588-panthor.patch
 
 upstream/mojo.patch
 upstream/ruy-include.patch
