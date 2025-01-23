@@ -1,6 +1,11 @@
-chromium (132.0.6834.83-2) UNRELEASED; urgency=high
+chromium (132.0.6834.110-1) unstable; urgency=high
 
   [ Andres Salomon ]
+  * New upstream security release.
+    - CVE-2025-0611: Object corruption in V8. Reported by 303f06e3.
+    - CVE-2025-0612: Out of bounds memory access in V8.
+      Reported by Alan Goodman.
+  * d/patches/upstream/mojo.patch: drop, upstream tarballs are now fixed.
   * d/chromium-shell.NEWS: ask users of the chromium-shell package to
     email me; otherwise, chromium-shell will be removed in the future.
 
@@ -20,7 +25,7 @@ chromium (132.0.6834.83-2) UNRELEASED; urgency=high
       which can cause browser crash when running with ozone wayland on
       rk3588 platform.
 
- -- Andres Salomon <dilinger@debian.org>  Tue, 14 Jan 2025 21:20:43 -0500
+ -- Andres Salomon <dilinger@debian.org>  Wed, 22 Jan 2025 16:36:45 -0500
 
 chromium (132.0.6834.83-1) unstable; urgency=high
 
