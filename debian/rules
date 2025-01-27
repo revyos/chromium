@@ -210,7 +210,7 @@ override_dh_auto_clean:
 url=https://gsdview.appspot.com/chromium-browser-official
 version:=$(shell dpkg-parsechangelog -S Version | sed s/-.*//)
 extract=chromium-$(version)
-tarfile=$(extract).tar
+tarfile=$(extract)-lite.tar
 tarball=$(tarfile).xz
 debvers=../chromium_$(version)
 seconds=$(debvers).seconds
@@ -232,6 +232,7 @@ get-orig-source:
 	@$(print_elapsed); echo
 	tar --exclude-from=$(debvers).excludes -xf ../$(tarball)
 	rm -f $(debvers).excludes
+	find $(extract) -depth -type d -empty -delete
 	@$(print_elapsed); echo
 	cd $(extract) && ../debian/scripts/check-upstream
 	chmod -R u+w $(extract)
