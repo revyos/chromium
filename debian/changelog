@@ -1,4 +1,8 @@
-chromium (132.0.6834.110-2) UNRELEASED; urgency=high
+chromium (132.0.6834.159-1) unstable; urgency=high
+
+  [ Andres Salomon ]
+  * New upstream security release.
+    - CVE-2025-0762: Use after free in DevTools. Reported by Sakana.S.
 
   [ Daniel Richard G. ]
   * d/copyright: Sort the list of Files-Excluded: entries, remove a few
@@ -10,7 +14,7 @@ chromium (132.0.6834.110-2) UNRELEASED; urgency=high
       that the former has everything we need.
     - Delete empty directories when making the orig-source tarball.
 
- -- Andres Salomon <dilinger@debian.org>  Wed, 22 Jan 2025 16:36:46 -0500
+ -- Andres Salomon <dilinger@debian.org>  Tue, 28 Jan 2025 20:26:06 -0500
 
 chromium (132.0.6834.110-1) unstable; urgency=high
 
