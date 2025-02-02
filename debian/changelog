@@ -1,3 +1,16 @@
+chromium (133.0.6943.35-1) UNRELEASED; urgency=high
+
+  * New upstream stable release.
+  * d/patches:
+    - upstream/array.patch: drop, merged upstream.
+    - upstream/ink-isfinite.patch: drop, merged upstream.
+    - upstream/ruy-include.patch: drop, merged upstream.
+    - upstream/uint.patch: drop, merged upstream.
+    - upstream/variant.patch: drop, merged upstream.
+    - upstream/webrtc-optional.patch: drop, merged upstream.
+
+ -- Andres Salomon <dilinger@debian.org>  Tue, 28 Jan 2025 20:26:06 -0500
+
 chromium (132.0.6834.159-1) unstable; urgency=high
 
   [ Andres Salomon ]

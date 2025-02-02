@@ -24,12 +24,6 @@ fixes/font-gc-asan.patch
 fixes/lens-optional.patch
 fixes/libsync-rk3588-panthor.patch
 
-upstream/ruy-include.patch
-upstream/ink-isfinite.patch
-upstream/webrtc-optional.patch
-upstream/variant.patch
-upstream/array.patch
-upstream/uint.patch
 
 disable/tests.patch
 disable/tests-swiftshader.patch
