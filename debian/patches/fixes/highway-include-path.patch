@@ -70,3 +70,14 @@ ERROR Unresolved dependencies.
        "//third_party/liburlpattern:liburlpattern_unittests",
        "//third_party/rapidhash:rapidhash_fuzztests",
        "//tools/binary_size:binary_size_trybot_py",
+--- a/third_party/blink/renderer/platform/fonts/shaping/glyph_bounds_accumulator.h
++++ b/third_party/blink/renderer/platform/fonts/shaping/glyph_bounds_accumulator.h
+@@ -37,7 +37,7 @@
+ #include "ui/gfx/geometry/rect_f.h"
+ 
+ #if defined(USE_SIMD_FOR_COMPUTING_GLYPH_BOUNDS)
+-#include "third_party/highway/src/hwy/highway.h"
++#include "hwy/highway.h"
+ #endif  // defined(USE_SIMD_FOR_COMPUTING_GLYPH_BOUNDS)
+ 
+ namespace blink {
