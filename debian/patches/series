@@ -9,7 +9,6 @@ fixes/widevine-revision.patch
 fixes/widevine-locations.patch
 fixes/rust-clanglib.patch
 fixes/material-utils.patch
-fixes/perfetto.patch
 fixes/strlcpy.patch
 fixes/bindgen.patch
 fixes/memory-allocator-dcheck-assert-fix.patch
@@ -40,7 +39,6 @@ disable/screen-ai-blob.patch
 
 system/icu-shim.patch
 system/jpeg.patch
-system/event.patch
 system/openjpeg.patch
 system/opus.patch
 system/eu-strip.patch
