@@ -1,7 +1,10 @@
 chromium (133.0.6943.35-1) UNRELEASED; urgency=high
 
   * New upstream stable release.
+  * Stop deleting third_party/highway, drop libhwy-dev build-dep, and
+    build against the bundled libhwy due to new API requirements.
   * d/patches:
+    - fixes/highway-include-path.patch: drop; switching to bundled hwy.
     - upstream/array.patch: drop, merged upstream.
     - upstream/ink-isfinite.patch: drop, merged upstream.
     - upstream/ruy-include.patch: drop, merged upstream.
@@ -15,6 +18,7 @@ chromium (133.0.6943.35-1) UNRELEASED; urgency=high
       another header build fix.
     - bookworm/clang19.patch: add patch to disable unsupported build args
     - fixes/optional.patch: add header build fix.
+
 
   [ Timothy Pearson ]
   * d/patches/ppc64le:
