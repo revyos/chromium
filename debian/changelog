@@ -34,6 +34,8 @@ chromium (133.0.6943.53-1) UNRELEASED; urgency=high
       Refresh for upstream changes
     - third_party/0002-third_party-libvpx-Remove-bad-ppc64-config.patch:
       Refresh for upstream changes
+    - third_party/0001-third-party-hwy-wrong-include.patch: Work around
+      incorrect header include
 
  -- Andres Salomon <dilinger@debian.org>  Tue, 28 Jan 2025 20:26:06 -0500
 
