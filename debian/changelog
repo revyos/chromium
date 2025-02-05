@@ -1,6 +1,12 @@
-chromium (133.0.6943.35-1) UNRELEASED; urgency=high
+chromium (133.0.6943.53-1) UNRELEASED; urgency=high
 
+  [ Andres Salomon ]
   * New upstream stable release.
+    - CVE-2025-0444: Use after free in Skia.
+      Reported by Francisco Alonso (@revskills).
+    - CVE-2025-0445: Use after free in V8. Reported by 303f06e3.
+    - CVE-2025-0451: Inappropriate implementation in Extensions API.
+      Reported by Vitor Torres and Alesandro Ortiz.
   * Stop deleting third_party/highway, drop libhwy-dev build-dep, and
     build against the bundled libhwy due to new API requirements.
   * d/patches:
