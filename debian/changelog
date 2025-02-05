@@ -1,4 +1,4 @@
-chromium (133.0.6943.53-1) UNRELEASED; urgency=high
+chromium (133.0.6943.53-1) unstable; urgency=high
 
   [ Andres Salomon ]
   * New upstream stable release.
@@ -25,7 +25,6 @@ chromium (133.0.6943.53-1) UNRELEASED; urgency=high
     - bookworm/clang19.patch: add patch to disable unsupported build args
     - fixes/optional.patch: add header build fix.
 
-
   [ Timothy Pearson ]
   * d/patches/ppc64le:
     - third_party/0001-Add-PPC64-support-for-boringssl.patch: Refresh for
@@ -37,7 +36,7 @@ chromium (133.0.6943.53-1) UNRELEASED; urgency=high
     - third_party/0001-third-party-hwy-wrong-include.patch: Work around
       incorrect header include
 
- -- Andres Salomon <dilinger@debian.org>  Tue, 28 Jan 2025 20:26:06 -0500
+ -- Andres Salomon <dilinger@debian.org>  Wed, 05 Feb 2025 00:18:56 -0500
 
 chromium (132.0.6834.159-1) unstable; urgency=high
 
