@@ -1,0 +1,29 @@
+From 81033cc7b695b94f8932c29f7812c41fb057aa2b Mon Sep 17 00:00:00 2001
+From: kxxt <rsworktech@outlook.com>
+Date: Sun, 25 Aug 2024 10:46:25 +0200
+Subject: [PATCH] chrome: runtime_api_delegate: add riscv64 define
+
+---
+ .../extensions/api/runtime/chrome_runtime_api_delegate.cc     | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+--- a/chrome/browser/extensions/api/runtime/chrome_runtime_api_delegate.cc
++++ b/chrome/browser/extensions/api/runtime/chrome_runtime_api_delegate.cc
+@@ -306,6 +306,8 @@
+     info->arch = extensions::api::runtime::PlatformArch::kMips;
+   } else if (strcmp(arch, "mips64el") == 0) {
+     info->arch = extensions::api::runtime::PlatformArch::kMips64;
++  } else if (strcmp(arch, "riscv64") == 0) {
++    info->arch = extensions::api::runtime::PlatformArch::kRiscv64;
+   } else {
+     NOTREACHED();
+   }
+@@ -321,6 +323,8 @@
+     info->nacl_arch = extensions::api::runtime::PlatformNaclArch::kMips;
+   } else if (strcmp(nacl_arch, "mips64") == 0) {
+     info->nacl_arch = extensions::api::runtime::PlatformNaclArch::kMips64;
++  } else if (strcmp(arch, "riscv64") == 0) {
++    info->nacl_arch = extensions::api::runtime::PlatformNaclArch::kRiscv64;
+   } else {
+     NOTREACHED();
+   }
