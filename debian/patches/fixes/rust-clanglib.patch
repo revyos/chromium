@@ -26,8 +26,8 @@ doing the same thing that upstream does w/ chromeos.
 +          _suffix = "-aarch64"
 +        } else if (current_cpu == "arm") {
 +          _suffix = "-armhf"
-+        } else if (current_cpu == "ppc64") {
-+          _suffix = "-powerpc64le"
++        } else if (current_cpu == "riscv64") {
++          _suffix = "-riscv64"
 +        } else {
 +          assert(false)  # Unhandled cpu type
 +        }
